@@ -1,0 +1,56 @@
+package LexerParser;
+import java_cup.runtime.*;
+
+//utiliza class MyParser que genera el lexer.jflex, pequeños cambios de lo tomado de la página de cup
+//cambios en parser code, init with y scan with {:
+
+action code {:
+	/*CODIGO DE JAVA
+	https://www.jflex.de/
+	http://www2.cs.tum.edu/projects/cup/examples.php*/
+	public void hola() {
+		System.out.println("Hola");
+	}
+	public void adios () {
+		System.out.println("Adiós");
+	}
+:}
+
+parser code {:
+	// Connect this parser to a scanner!
+	CodeLexer lex;
+
+	@SuppressWarnings("deprecation")
+	public parser(CodeLexer lex) {
+		this.lex = lex;
+		this.symbolFactory = new DefaultSymbolFactory();
+	}
+:}
+
+init with {: :};
+
+scan with {: return lex.next_token(); :};
+/* Terminales (tokens retornados por el scanner). */
+/* keywords */
+terminal ABSTRACT, PUBLIC, PRIVATE;
+/* literals */
+terminal IDENTIFIER, INTEGER, LITERAL, STRING_LITERAL, INTEGER_LITERAL;
+/* operators */
+terminal EQ, EQEQ, PLUS;
+/* otros para BasicLexer */
+terminal BREAK, BOOLEAN;
+/* otros para lexer navideño */
+
+// no terminales
+non terminal miLenguaje;
+//produccion de inicio
+start with miLenguaje;
+
+miLenguaje ::= {:
+	hola();
+:}
+IDENTIFIER
+{:
+	adios();
+:}
+;
