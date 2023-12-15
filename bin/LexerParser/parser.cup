@@ -27,6 +27,44 @@ parser code {:
 	}
 :}
 
+// Operadores
+terminal 
+        RUDOLPH,
+        DASHER,
+        COMET,
+        VIXEN,
+        GRINCH,
+        QUIEN,
+        KNECHT_RUPRECHT,
+        KRAMPUS,
+        BELSNICKEL,
+        ZWARTE_PIET,
+        SNOWBALL_ALABASTRO,
+        PEPPER_MINSTIX,
+        MELCHOR,
+        GASPAR,
+        BALTASAR, 
+        COMA;
+
+terminal PERSONA,
+        PAPA_NOEL,
+        SANTA_CLAUS,
+        SAN_NICOLAS,
+        NINO_JESUS,
+		COLACHO,
+		SANTA;
+
+//PRINT - READ
+terminal PRINT, READ, END;
+
+// LEXEMAS DE ESTRUCTURAS DE CONTROL
+terminal ELFO, HADA, DUENDE, ENVUELVE, HACE, REVISA, ENVIA, CORTA;
+
+
+
+
+
+
 init with {: :};
 
 scan with {: return lex.next_token(); :};
