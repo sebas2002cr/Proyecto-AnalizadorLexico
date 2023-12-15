@@ -67,7 +67,7 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 "++" {return new Symbol(sym.GRINCH, yyline, yycolumn, yytext());}
 "--" {return new Symbol(sym.QUIEN, yyline, yycolumn, yytext());}
 
-// OPERADORES RELACIONALES (ELFOS) Krampus. Belsnickel. Zwarte Piet Snowball Alabastro Pepper Minstix
+// OPERADORES RELACIONALES (ELFOS) 
 ">=" {return new Symbol(sym.KNECHT_RUPRECHT, yyline, yycolumn, yytext());}
 ">" {return new Symbol(sym.KRAMPUS, yyline, yycolumn, yytext());}
 "<=" {return new Symbol(sym.BELSNICKEL, yyline, yycolumn, yytext());}

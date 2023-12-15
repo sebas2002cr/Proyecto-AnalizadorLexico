@@ -1,6 +1,7 @@
 package LexerParser;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -8,9 +9,9 @@ import java.nio.file.Paths;
 import java_cup.runtime.Symbol;
 
 public class LexerParser {
-	private static String basePath = System.getProperty("user.dir");
+    private static String basePath = System.getProperty("user.dir");
 
-	public static void generate() throws Exception {
+    public static void generate() throws Exception {
         // archivos lexer y parser
         String[] lexerPath = { basePath + "\\src\\LexerParser\\lexer.jflex" };
         String[] parserPath = { basePath + "\\src\\LexerParser\\parser.cup" };
@@ -27,20 +28,24 @@ public class LexerParser {
     }
 
     public static void analyze(String codePath) throws Exception {
-        Reader reader = new BufferedReader(new FileReader(basePath + codePath));
+        // Construye la ruta del archivo de manera que sea independiente del sistema
+        // operativo
+        File file = new File(basePath, codePath);
+        String absolutePath = file.getAbsolutePath();
+        System.out.println("Ruta del archivo: " + basePath + codePath);
+        Reader reader = new BufferedReader(new FileReader(absolutePath));
         reader.read();
         CodeLexer lex = new CodeLexer(reader);
         int i = 0;
         Symbol token;
-        while(true){
+        while (true) {
             token = lex.next_token();
-            if(token.sym != 0) {
+            if (token.sym != 0) {
                 System.out.println(
-                    "Token: " +
-                    token.sym +
-                    ", Valor: " +
-                    (token.value == null ? lex.yytext() : token.value.toString())
-                );
+                        "Token: " +
+                                token.sym +
+                                ", Valor: " +
+                                (token.value == null ? lex.yytext() : token.value.toString()));
             } else {
                 System.out.println("Cantidad de lexemas encontrados: " + i);
                 return;
