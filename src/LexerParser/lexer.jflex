@@ -21,9 +21,12 @@ import java_cup.runtime.*;
 	}
 %}
 
-LineTerminator = \r|\n|\r\n
-InputCharacter = [^\r\n]
-WhiteSpace     = {LineTerminator} | [ \t\f]
+// LENGUAGE: Jojojo
+LETER = [a-zA-Z_]
+DIGIT = [0-9]
+SPACE = [ \t \r \n \f \r\n]
+SYMBOL = [#!$%&?¡_]
+ACCENT = [ñÑáéíóúÁÉÍÓÚ]
 
 /* comments */
 Comment = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
@@ -152,7 +155,85 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 	\\                             { string.append('\\'); }
 }
 
-/* error fallback */
-[^] {
-	throw new Error("Illegal character <"+ yytext()+">");
+
+// --------------- GRAMATICA PARA CONTROL DE ERRORES --------------- //
+
+
+// Errores en Flotantes
+{DIGIT}+"."{DIGIT}+("."{DIGIT}*)+ {
+    // Patrón: D+.D+D* (Error en formato de flotante)
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+("."{DIGIT}+([eE][-]?{DIGIT}*)?) | ({DIGIT}+"."{DIGIT}+([eE][-]?)({DIGIT}*"."{DIGIT}*))* {
+    // Patrón: .D+eD* / D+.D+eD* / D+.D* . D+D*
+    // Error en formato de notación científica o en formato de punto flotante
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+({DIGIT}+"."{DIGIT}+{LETER}+) | ({DIGIT}+"."{LETER}+{DIGIT}+) {
+    // Patrón: D+.D+L+ / D+.L+D+
+    // Error: Carácter no numérico después del punto en el flotante
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+({DIGIT}+{LETER}+"."{DIGIT}+) | ({LETER}+{DIGIT}+"."{DIGIT}+) {
+    // Patrón: D+L+.D+ / L+D+.D+
+    // Error: Carácter no numérico antes del punto en el flotante
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+({LETER}+"."{DIGIT}+{LETER}+) | ({LETER}+"."{LETER}+{DIGIT}+) {
+    // Patrón: L+.D+L+ / L+.L+D+
+    // Error: Carácter no numérico antes y después del punto en el flotante
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+({DIGIT}+{LETER}*".") {
+    // Patrón: D+L*.
+    // Error: Carácter no numérico después del punto en el flotante
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+{DIGIT}+","{DIGIT}+ {
+    // Patrón: D+,D+
+    // Error: Uso de coma como separador decimal en lugar de punto
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+// Errores en Literales
+"#" {LETER}+ {
+    // Patrón: #L+
+    // Error: Literal inválido, comienza con '#' seguido de caracteres no válidos
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+'[^'] ~' {
+    // Patrón: 'C' ~'
+    // Error: Literal de cadena inválido, comienza y termina con comillas simples
+    return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());
+}
+
+// Errores en Comentarios
+\"[^\"]* {
+    // Patrón: "C*
+    // Error: Comentario inválido, comienza con comillas dobles y no termina
+    return new Symbol(sym.error, yyline, yycolumn, yytext());
+}
+
+\(\*[^\)\*]* {
+    // Patrón: (*C*
+    // Error: Comentario inválido, comienza con paréntesis y asterisco y no termina
+    return new Symbol(sym.error, yyline, yycolumn, yytext());
+}
+
+\{[^\}]* {
+    // Patrón: {C*
+    // Error: Comentario inválido, comienza con llave y no termina
+    return new Symbol(sym.error, yyline, yycolumn, yytext());
+}
+
+. {
+    // Cualquier otro carácter no reconocido
+    return new Symbol(sym.error, yyline, yycolumn, yytext());
 }
