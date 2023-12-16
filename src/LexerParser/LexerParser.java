@@ -49,5 +49,6 @@ public class LexerParser {
             } else break;
         }
         targetWritter.close();
+        System.out.println("Análisis léxico escrito en " + targetPath);
     }
 }
