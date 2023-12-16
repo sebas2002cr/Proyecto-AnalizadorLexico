@@ -1,7 +1,6 @@
 package LexerParser;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -28,12 +27,7 @@ public class LexerParser {
     }
 
     public static void analyze(String codePath) throws Exception {
-        // Construye la ruta del archivo de manera que sea independiente del sistema
-        // operativo
-        File file = new File(basePath, codePath);
-        String absolutePath = file.getAbsolutePath();
-        System.out.println("Ruta del archivo: " + basePath + codePath);
-        Reader reader = new BufferedReader(new FileReader(absolutePath));
+        Reader reader = new BufferedReader(new FileReader(basePath + codePath));
         reader.read();
         CodeLexer lex = new CodeLexer(reader);
         int i = 0;
@@ -43,9 +37,9 @@ public class LexerParser {
             if (token.sym != 0) {
                 System.out.println(
                         "Token: " +
-                                token.sym +
-                                ", Valor: " +
-                                (token.value == null ? lex.yytext() : token.value.toString()));
+                                (token.value == null ? lex.yytext() : token.value.toString()) +
+                                "," + " Valor: " +
+                                sym.terminalNames[token.sym] + ", Linea: " + token.left + ", Columna: " + token.right);
             } else {
                 System.out.println("Cantidad de lexemas encontrados: " + i);
                 return;

@@ -27,13 +27,17 @@ parser code {:
 	}
 :}
 
-// Operadores
-terminal 
-        RUDOLPH,
-        DASHER,
-        COMET,
-        VIXEN,
-        GRINCH,
+init with {: :};
+
+scan with {: return lex.next_token(); :};
+/* Terminales (tokens retornados por el scanner). */
+/* keywords */
+
+
+
+/* operators */
+terminal RUDOLPH, DASHER, COMET, VIXEN, TOTIN, RENILLO,
+		GRINCH,
         QUIEN,
         KNECHT_RUPRECHT,
         KRAMPUS,
@@ -43,8 +47,8 @@ terminal
         PEPPER_MINSTIX,
         MELCHOR,
         GASPAR,
-        BALTASAR, 
-        COMA;
+        BALTASAR;
+
 
 terminal PERSONA,
         PAPA_NOEL,
@@ -54,13 +58,38 @@ terminal PERSONA,
 		COLACHO,
 		SANTA;
 
-//PRINT - READ
-terminal PRINT, READ, END;
+terminal L_COLACHO,
+		L_SAN_NICOLAS,
+		L_PAPA_NOEL;
 
-// LEXEMAS DE ESTRUCTURAS DE CONTROL
+terminal ABRECUENTO,
+		CIERRECUENTO,
+		ABREEMPAQUE,
+		CIERRAEMPAQUE,
+		ABREREGALO,
+		CIERRAREGALO;
+
+
+//PRINT - READ - END
+terminal NARRA, ESCUCHA, FINREGALO;
+
+
 terminal ELFO, HADA, DUENDE, ENVUELVE, HACE, REVISA, ENVIA, CORTA;
+terminal ENTREGA, COMA;
 
 
 
 
+// no terminales
+non terminal miLenguaje;
+//produccion de inicio
+start with miLenguaje;
 
+miLenguaje ::= {:
+	hola();
+:}
+PERSONA
+{:
+	adios();
+:}
+;
