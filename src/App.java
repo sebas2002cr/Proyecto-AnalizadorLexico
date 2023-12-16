@@ -6,7 +6,7 @@ public class App {
             if (args.length > 0 && args[0].equals("-g")) {
                 LexerParser.generate();
             } else {
-                LexerParser.analyze("/src/codigo.txt");
+                LexerParser.analyze("/test/codigo.txt", "/test/lexemas.txt");
             }
         } catch (Exception e) {
         }
