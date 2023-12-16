@@ -1,5 +1,0 @@
- public abstract hola "hola" _1 _m1
-prueba2 jojo
-public abstract hola "hola" _1 _m1
-ELSE else Else DO UNTIL () = ++ -- <> < > IF
-PRINT %%
