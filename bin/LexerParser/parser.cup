@@ -64,31 +64,3 @@ terminal ELFO, HADA, DUENDE, ENVUELVE, HACE, REVISA, ENVIA, CORTA;
 
 
 
-
-init with {: :};
-
-scan with {: return lex.next_token(); :};
-/* Terminales (tokens retornados por el scanner). */
-/* keywords */
-terminal ABSTRACT, PUBLIC, PRIVATE;
-/* literals */
-terminal IDENTIFIER, INTEGER, LITERAL, STRING_LITERAL, INTEGER_LITERAL;
-/* operators */
-terminal EQ, EQEQ, PLUS;
-/* otros para BasicLexer */
-terminal BREAK, BOOLEAN;
-/* otros para lexer navideño */
-
-// no terminales
-non terminal miLenguaje;
-//produccion de inicio
-start with miLenguaje;
-
-miLenguaje ::= {:
-	hola();
-:}
-IDENTIFIER
-{:
-	adios();
-:}
-;

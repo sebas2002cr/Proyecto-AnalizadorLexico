@@ -13,18 +13,18 @@ public class LexerParser {
 
     public static void generate() throws Exception {
         // archivos lexer y parser
-        String[] lexerPath = { basePath + "\\src\\LexerParser\\lexer.jflex" };
-        String[] parserPath = { basePath + "\\src\\LexerParser\\parser.cup" };
+        String[] lexerPath = { basePath + "/src/LexerParser/lexer.jflex" };
+        String[] parserPath = { basePath + "/src/LexerParser/parser.cup" };
 
         // generamos lexer y parser
         jflex.Main.generate(lexerPath);
         java_cup.Main.main(parserPath);
 
         // mover archivos
-        Files.deleteIfExists(Paths.get(basePath + "\\src\\LexerParser\\sym.java"));
-        Files.deleteIfExists(Paths.get(basePath + "\\src\\LexerParser\\parser.java"));
-        Files.move(Paths.get(basePath + "\\sym.java"), Paths.get(basePath + "\\src\\LexerParser\\sym.java"));
-        Files.move(Paths.get(basePath + "\\parser.java"), Paths.get(basePath + "\\src\\LexerParser\\parser.java"));
+        Files.deleteIfExists(Paths.get(basePath + "/src/LexerParser/sym.java"));
+        Files.deleteIfExists(Paths.get(basePath + "/src/LexerParser/parser.java"));
+        Files.move(Paths.get(basePath + "/sym.java"), Paths.get(basePath + "/src/LexerParser/sym.java"));
+        Files.move(Paths.get(basePath + "/parser.java"), Paths.get(basePath + "/src/LexerParser/parser.java"));
     }
 
     public static void analyze(String codePath) throws Exception {

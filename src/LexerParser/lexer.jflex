@@ -45,16 +45,13 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 
 %%
 
-<YYINITIAL> "abstract"           { return symbol(sym.ABSTRACT); }
-<YYINITIAL> "boolean"            { return symbol(sym.BOOLEAN); }
-<YYINITIAL> "break"              { return symbol(sym.BREAK); }
-<YYINITIAL> "public"             { return symbol(sym.PUBLIC); }
-<YYINITIAL> {
+
+
 	
-{ESPACIO} {/*No se procesa*/} // espacio en blanco
-"//".* {/*No se procesa*/} // dos slash de comentario
-("\(\*" ~"\*\)" | "\(\*" "\*"+ "\)") {/*No se procesa*/} // comentario multilínea
-("{" ~"}" | "{" "}") {/*No se procesa*/} // comentario multilínea
+{SPACE} {/*No se procesa*/} // espacio en blanco
+"@".* {/*No se procesa*/} // dos slash de comentario
+//("\(\*" ~"\*\)" | "\(\*" "\*"+ "\)") {/*No se procesa*/} // comentario multilínea 
+("/" ~"/" | "/" "/") {/*No se procesa*/} // comentario multilínea
 
 
 // OPERADORES ARITMETICOS BINARIOS (RENOS)
@@ -62,6 +59,8 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 "-" {return new Symbol(sym.DASHER, yyline, yycolumn, yytext());}
 "*" {return new Symbol(sym.COMET, yyline, yycolumn, yytext());}
 "/" {return new Symbol(sym.VIXEN, yyline, yycolumn, yytext());}
+"~" {return new Symbol(sym.TOTIN, yyline, yycolumn, yytext());} 
+"**" {return new Symbol(sym.RENILLO, yyline, yycolumn, yytext());} //CAMBIAR NOMBRE DE RENO
 
 // OPERADORES ARITMETICOS UNARIOS (GRINCH, QUIEN) duda sobre "quien"
 "++" {return new Symbol(sym.GRINCH, yyline, yycolumn, yytext());}
@@ -76,13 +75,13 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 "=" {return new Symbol(sym.PEPPER_MINSTIX, yyline, yycolumn, yytext());}
 
 // OPERADORES LOGICOS (REYES MAGOS)
-"&&" {return new Symbol(sym.MELCHOR, yyline, yycolumn, yytext());}
-"||" {return new Symbol(sym.GASPAR, yyline, yycolumn, yytext());}
-"!" {return new Symbol(sym.BALTASAR, yyline, yycolumn, yytext());}
+"^" {return new Symbol(sym.MELCHOR, yyline, yycolumn, yytext());} //CONJUNCION
+"#" {return new Symbol(sym.GASPAR, yyline, yycolumn, yytext());} // DISYUNCION
+"!" {return new Symbol(sym.BALTASAR, yyline, yycolumn, yytext());} //NEGACION
 
 
 // IDENTIFICADORES 
-{LETRA}(({LETRA}|{DIGITO}){0, 126})? {return new Symbol(sym.PERSONA, yyline, yycolumn, yytext());}
+{LETER}(({LETER}|{DIGIT}){0, 126})? {return new Symbol(sym.PERSONA, yyline, yycolumn, yytext());}
 
 
 // TIPOS
@@ -96,14 +95,14 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 
 //LITERALES
 // Flotantes
-(({DIGITO}+"."{DIGITO}+)) |
-    (({DIGITO}"."{DIGITO}+)([eE][-]?{DIGITO}+)) {return new Symbol(sym.L_COLACHO, yyline, yycolumn, yytext());}
+(({DIGIT}+"."{DIGIT}+)) |
+    (({DIGIT}"."{DIGIT}+)([eE][-]?{DIGIT}+)) {return new Symbol(sym.L_COLACHO, yyline, yycolumn, yytext());}
 
 // Literales
 ((\"[^\"] ~\")|(\"\")) {return new Symbol(sym.L_SAN_NICOLAS, yyline, yycolumn, yytext());}
-//\"({LETRA}|{DIGITO}|{ESPACIO}|{SIMBOLO})*+\" | ("#"{DIGITO}{DIGITO}) {lexeme=yytext(); line=yyline; return LITERAL_STRING;}
-("#"{DIGITO}+) {return new Symbol(sym.L_SAN_NICOLAS, yyline, yycolumn, yytext());}
-("(-"{DIGITO}+")")|{DIGITO}+ {return new Symbol(sym.L_PAPA_NOEL, yyline, yycolumn, yytext());} // Un numero entero
+//\"({LETRA}|{DIGIT}|{ESPACIO}|{SIMBOLO})*+\" | ("#"{DIGIT}{DIGIT}) {lexeme=yytext(); line=yyline; return LITERAL_STRING;}
+("#"{DIGIT}+) {return new Symbol(sym.L_SAN_NICOLAS, yyline, yycolumn, yytext());}
+("(-"{DIGIT}+")")|{DIGIT}+ {return new Symbol(sym.L_PAPA_NOEL, yyline, yycolumn, yytext());} // Un numero entero
 
 
 //PARENTESIS
@@ -140,7 +139,17 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 
 //LEXEMA SEPARADOR
 "," {return new Symbol(sym.COMA, yyline, yycolumn, yytext());}
-}
+
+
+
+// FUNCIONES 
+"FUNCTION" {return new Symbol(sym.FUNCTION, yyline, yycolumn, yytext());}
+"BEGIN" {return new Symbol(sym.BEGIN, yyline, yycolumn, yytext());}
+"PROCEDURE" {return new Symbol(sym.PROCEDURE, yyline, yycolumn, yytext());}
+"MAIN" {return new Symbol(sym.PROGRAM, yyline, yycolumn, yytext());}
+
+
+
 
 <STRING> {
 	\"                             { yybegin(YYINITIAL);
@@ -157,6 +166,13 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 
 
 // --------------- GRAMATICA PARA CONTROL DE ERRORES --------------- //
+
+//identificador mayor a 127 caracteres
+{LETER}(({LETER}|{DIGIT}){127})({LETER}|{DIGIT})* {return new Symbol(sym.ERROR_IDENTIFICADOR, yyline, yycolumn, yytext());}
+//identificador no comienza con DIGIT
+(({DIGIT}+)({LETER}|{ACCENT}))(({LETER}|{DIGIT}|{SYMBOL}|{ACCENT}))* {return new Symbol(sym.ERROR_IDENTIFICADOR, yyline, yycolumn, yytext());}
+//identificador no lleva simbolos
+({LETER}|{ACCENT}|{SYMBOL})(({LETER}|{DIGIT}|{SYMBOL}|{ACCENT}))+ {return new Symbol(sym.ERROR_IDENTIFICADOR, yyline, yycolumn, yytext());}
 
 
 // Errores en Flotantes
