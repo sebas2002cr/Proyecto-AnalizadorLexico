@@ -1,2 +1,4 @@
- ELSE else Else DO UNTIL () = ++ -- <> < > IF
+ public abstract hola "hola" _1 _m1
+prueba2 jojo
+ELSE else Else DO UNTIL () = ++ -- <> < > IF
 PRINT %%
