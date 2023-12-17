@@ -147,11 +147,4 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 }
 
 /* error fallback */
-[^] {
-	System.out.println(
-		"Token no reconocido: " +
-		yytext()+ ", en la linea: " + 
-		yyline + ", columna:  " +
-		yycolumn 
-	);
-}
+[^] {return new Symbol(sym.error, yyline, yycolumn, yytext());}

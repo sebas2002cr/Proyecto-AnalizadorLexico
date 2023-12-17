@@ -884,12 +884,7 @@ public class CodeLexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { System.out.println(
-		"Token no reconocido: " +
-		yytext()+ ", en la linea: " + 
-		yyline + ", columna:  " +
-		yycolumn 
-	);
+            { return new Symbol(sym.error, yyline, yycolumn, yytext());
             }
           // fall through
           case 49: break;
