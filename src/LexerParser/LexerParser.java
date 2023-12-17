@@ -59,5 +59,8 @@ public class LexerParser {
         }
         targetWritter.close();
         errorWritter.close();
+        System.out.println("\nSe leyó el archivo llamado \"codigo.txt\", para hacer el análisis léxico ");
+        System.out.println("Análisis léxico escrito en \"lexemas.txt\" ");
+        System.out.println("Análisis de Errores léxicos escrito en \"errores.txt\" ");
     }
 }
