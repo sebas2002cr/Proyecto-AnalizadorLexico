@@ -1,23 +1,11 @@
-package LexerParser;
+package syntaxis;
+
 import java_cup.runtime.*;
+import lexical.CodeLexer;
 
-//utiliza class MyParser que genera el lexer.jflex, pequeños cambios de lo tomado de la página de cup
-//cambios en parser code, init with y scan with {:
-
-action code {:
-	/*CODIGO DE JAVA
-	https://www.jflex.de/
-	http://www2.cs.tum.edu/projects/cup/examples.php*/
-	public void hola() {
-		System.out.println("Hola");
-	}
-	public void adios () {
-		System.out.println("Adiós");
-	}
-:}
+action code {: :}
 
 parser code {:
-	// Connect this parser to a scanner!
 	CodeLexer lex;
 
 	@SuppressWarnings("deprecation")
@@ -30,12 +18,8 @@ parser code {:
 init with {: :};
 
 scan with {: return lex.next_token(); :};
-/* Terminales (tokens retornados por el scanner). */
-/* keywords */
 
-
-
-/* operators */
+// operadores
 terminal RUDOLPH, DASHER, COMET, VIXEN, TOTIN, RENILLO,
 		GRINCH,
         QUIEN,
@@ -49,7 +33,7 @@ terminal RUDOLPH, DASHER, COMET, VIXEN, TOTIN, RENILLO,
         GASPAR,
         BALTASAR;
 
-
+// tipos
 terminal PERSONA,
         PAPA_NOEL,
         SANTA_CLAUS,
@@ -58,10 +42,12 @@ terminal PERSONA,
 		COLACHO,
 		SANTA;
 
+// literales
 terminal L_COLACHO,
 		L_SAN_NICOLAS,
 		L_PAPA_NOEL;
 
+// símbolos
 terminal ABRECUENTO,
 		CIERRECUENTO,
 		ABREEMPAQUE,
@@ -69,27 +55,27 @@ terminal ABRECUENTO,
 		ABREREGALO,
 		CIERRAREGALO;
 
+// PRINT - READ
+terminal NARRA, ESCUCHA;
 
-//PRINT - READ - END
-terminal NARRA, ESCUCHA, FINREGALO;
-
-
+// estructuras
 terminal ELFO, HADA, DUENDE, ENVUELVE, HACE, REVISA, ENVIA, CORTA;
 terminal ENTREGA, COMA;
-
-
-
+terminal FUNCTION, MAIN;
 
 // no terminales
-non terminal miLenguaje;
-//produccion de inicio
-start with miLenguaje;
+non terminal navidad, bolsa_navidenna, funcion, funcion_main;
+non terminal Symbol epsilon;
 
-miLenguaje ::= {:
-	hola();
-:}
-PERSONA
-{:
-	adios();
-:}
-;
+//produccion de inicio
+start with navidad;
+
+navidad ::= epsilon;
+
+// funcion_main ::= FUNCTION MAIN ABRECUENTO CIERRECUENTO;
+
+// bolsa_navidenna ::= bolsa_navidenna | epsilon;
+
+// funcion ::= FUNCTION PERSONA ABRECUENTO CIERRECUENTO;
+
+epsilon ::= {: RESULT = new Symbol(-1); :};
