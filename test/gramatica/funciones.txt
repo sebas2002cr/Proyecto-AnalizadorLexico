@@ -1,0 +1,12 @@
+ function prueba1: int[10](var: int[10], var2: string) |
+
+function main() {
+
+}
+
+function prueba2: string() {
+	var1: string |
+	var2: float |
+}
+
+function prueba3: char() var: char |

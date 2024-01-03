@@ -53,29 +53,54 @@ terminal ABRECUENTO,
 		ABREEMPAQUE,
 		CIERRAEMPAQUE,
 		ABREREGALO,
-		CIERRAREGALO;
+		CIERRAREGALO,
+		FIN_REGALO;
 
 // PRINT - READ
 terminal NARRA, ESCUCHA;
 
 // estructuras
 terminal ELFO, HADA, DUENDE, ENVUELVE, HACE, REVISA, ENVIA, CORTA;
-terminal ENTREGA, COMA;
-terminal FUNCTION, MAIN;
+terminal ENTREGA, COMA, DOS_PUNTOS;
+terminal FUNCTION, MAIN, LOCAL;
 
 // no terminales
 non terminal navidad, bolsa_navidenna, funcion, funcion_main;
+non terminal parametros, parametro, tipo, array, mas_parametros;
+non terminal bloque_codigo, linea_codigo, codigo_multilinea;
+non terminal regalo, literal, llamada_funcion;
+non terminal expresiones, mas_expresiones;
 non terminal Symbol epsilon;
 
 //produccion de inicio
 start with navidad;
 
-navidad ::= epsilon;
+navidad ::= funcion navidad | funcion_main bolsa_navidenna;
 
-// funcion_main ::= FUNCTION MAIN ABRECUENTO CIERRECUENTO;
+bolsa_navidenna ::= funcion bolsa_navidenna | epsilon;
+funcion ::= FUNCTION PERSONA DOS_PUNTOS tipo ABRECUENTO parametros CIERRECUENTO bloque_codigo;
+funcion_main ::= FUNCTION MAIN ABRECUENTO CIERRECUENTO bloque_codigo;
 
-// bolsa_navidenna ::= bolsa_navidenna | epsilon;
+parametros ::= parametro | parametro COMA mas_parametros | epsilon;
+mas_parametros ::= parametro | parametro COMA mas_parametros;
+parametro ::= PERSONA DOS_PUNTOS tipo;
+tipo ::= PAPA_NOEL | SANTA_CLAUS | SAN_NICOLAS | NINO_JESUS | COLACHO | array;
+array ::=
+	PAPA_NOEL ABREEMPAQUE L_PAPA_NOEL CIERRAEMPAQUE |
+	NINO_JESUS ABREEMPAQUE L_PAPA_NOEL CIERRAEMPAQUE;
 
-// funcion ::= FUNCTION PERSONA ABRECUENTO CIERRECUENTO;
+linea_codigo ::=
+	LOCAL parametros FIN_REGALO | // declaración de una o varias variables
+	PERSONA ENTREGA regalo FIN_REGALO; // asignación de variable declarada
+
+codigo_multilinea ::= linea_codigo codigo_multilinea | epsilon;
+bloque_codigo ::= linea_codigo | FIN_REGALO | ABREREGALO codigo_multilinea CIERRAREGALO;
+
+regalo ::= literal | PERSONA | llamada_funcion; // añadir expresiones lógicas y aritméticas
+literal ::= L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL;
+llamada_funcion ::= PERSONA ABRECUENTO expresiones CIERRECUENTO;
+
+expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
+mas_expresiones ::= regalo | regalo COMA mas_expresiones;
 
 epsilon ::= {: RESULT = new Symbol(-1); :};

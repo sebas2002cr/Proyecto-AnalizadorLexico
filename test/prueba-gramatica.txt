@@ -1,0 +1,17 @@
+ function prueba1:int[10] (var: int[10], var2: string) |
+
+function main() {
+
+}
+
+function prueba2:string (var0: boolean) {
+	local var1: string, var2: float |
+	local var3: int, var4: char |
+	var1 := var0 |
+	var2 := 10 |
+	var3 := prueba3() |
+	var4 := prueba1(1) |
+	var4 := prueba1(1, prueba1(), "prueba") |
+}
+
+function prueba3:char () local var: char |

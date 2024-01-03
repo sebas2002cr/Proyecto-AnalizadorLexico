@@ -74,7 +74,10 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 <YYINITIAL> "BREAK" {return symbol(sym.CORTA);}
 <YYINITIAL> "PRINT" {return symbol(sym.NARRA);}
 <YYINITIAL> "READ" {return symbol(sym.ESCUCHA);}
+
 <YYINITIAL> "FUNCTION" {return symbol(sym.FUNCTION);}
+<YYINITIAL> "MAIN" {return symbol(sym.MAIN);}
+<YYINITIAL> "LOCAL" {return symbol(sym.LOCAL);}
 
 <YYINITIAL> {
 	// IDENTIFICADORES
@@ -124,13 +127,13 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 	"{" {return symbol(sym.ABREREGALO);}
 	"}" {return symbol(sym.CIERRAREGALO);}
 
-	//LEXEMA DE ADSIGNACION
+	//LEXEMA DE ASIGNACION
 	":=" {return symbol(sym.ENTREGA);}
 
 	//LEXEMA SEPARADOR
 	"," {return symbol(sym.COMA);}
-
-	"main" {return symbol(sym.MAIN);}
+	":" {return symbol(sym.DOS_PUNTOS);}
+	"|" {return symbol(sym.FIN_REGALO);}
 
 	/* comments */
 	{Comment}                      { /* ignore */ }
