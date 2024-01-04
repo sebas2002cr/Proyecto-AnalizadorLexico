@@ -67,12 +67,14 @@ terminal FUNCTION, MAIN, LOCAL;
 // no terminales
 non terminal navidad, bolsa_navidenna, funcion, funcion_main;
 non terminal parametros, parametro, tipo, array, mas_parametros;
+non terminal asignar_variable, asignar_variable_declarada, declarar_asignar_variable;
 non terminal bloque_codigo, linea_codigo, codigo_multilinea;
 non terminal regalo, literal, llamada_funcion;
 non terminal expresiones, mas_expresiones;
+non terminal condicional, condicional_if, condicionales_elif, condicional_elif, condicional_else;
+non terminal ciclo_for, ciclo_do_until;
 non terminal Symbol epsilon;
 
-//produccion de inicio
 start with navidad;
 
 navidad ::= funcion navidad | funcion_main bolsa_navidenna;
@@ -89,18 +91,46 @@ array ::=
 	PAPA_NOEL ABREEMPAQUE L_PAPA_NOEL CIERRAEMPAQUE |
 	NINO_JESUS ABREEMPAQUE L_PAPA_NOEL CIERRAEMPAQUE;
 
+asignar_variable_declarada ::= PERSONA ENTREGA regalo;
+declarar_asignar_variable ::= parametro ENTREGA regalo;
+asignar_variable ::= asignar_variable_declarada | declarar_asignar_variable;
+
 linea_codigo ::=
+	regalo FIN_REGALO | // expresión
 	LOCAL parametros FIN_REGALO | // declaración de una o varias variables
-	PERSONA ENTREGA regalo FIN_REGALO; // asignación de variable declarada
+	asignar_variable_declarada FIN_REGALO | // asignación de variable ya declarada
+	LOCAL declarar_asignar_variable FIN_REGALO | // se declara y asigna variable
+	condicional | // condicionales
+	ENVIA regalo FIN_REGALO | // return
+	CORTA FIN_REGALO | // break
+	ciclo_for |
+	ciclo_do_until FIN_REGALO;
 
 codigo_multilinea ::= linea_codigo codigo_multilinea | epsilon;
 bloque_codigo ::= linea_codigo | FIN_REGALO | ABREREGALO codigo_multilinea CIERRAREGALO;
 
+// faltan producciones de print y read
 regalo ::= literal | PERSONA | llamada_funcion; // añadir expresiones lógicas y aritméticas
 literal ::= L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL;
 llamada_funcion ::= PERSONA ABRECUENTO expresiones CIERRECUENTO;
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;
+
+// Corregir: el if sin elif ni else ha de terminar con |, corregir esto para que no sea necesario
+// condicional ::= condicional_if condicionales_elif;
+// condicionales_elif ::= condicional_elif condicionales_elif | epsilon | condicional_else;
+condicional ::= condicional_if FIN_REGALO | condicional_if condicionales_elif condicional_else;
+condicionales_elif ::= condicional_elif condicionales_elif | epsilon;
+condicional_if ::= ELFO ABRECUENTO regalo CIERRECUENTO bloque_codigo;
+condicional_elif ::= HADA ABRECUENTO regalo CIERRECUENTO bloque_codigo;
+condicional_else ::= DUENDE bloque_codigo;
+
+// sustituir el primer regalo por una expresión lógica
+// sustituir el segundo regalo por una acción cómo una operación aritmética o una llamada a función
+ciclo_for ::= ENVUELVE ABRECUENTO asignar_variable COMA regalo COMA regalo CIERRECUENTO bloque_codigo;
+
+// sustituir el regalo por una expresión lógica
+ciclo_do_until ::= HACE bloque_codigo REVISA ABRECUENTO regalo CIERRECUENTO;
 
 epsilon ::= {: RESULT = new Symbol(-1); :};
