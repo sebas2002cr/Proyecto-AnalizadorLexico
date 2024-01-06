@@ -9,6 +9,7 @@ package syntaxis;
 public class sym {
   /* terminals */
   public static final int BELSNICKEL = 12;
+  public static final int ERROR_IDENTIFICADOR = 52;
   public static final int FUNCTION = 49;
   public static final int TOTIN = 6;
   public static final int HADA = 39;
@@ -53,6 +54,7 @@ public class sym {
   public static final int ENVIA = 44;
   public static final int COLACHO = 24;
   public static final int COMET = 4;
+  public static final int ERROR_LITERAL = 53;
   public static final int SANTA = 25;
   public static final int ELFO = 38;
   public static final int LOCAL = 51;
@@ -112,7 +114,9 @@ public class sym {
   "DOS_PUNTOS",
   "FUNCTION",
   "MAIN",
-  "LOCAL"
+  "LOCAL",
+  "ERROR_IDENTIFICADOR",
+  "ERROR_LITERAL"
   };
 }
 
