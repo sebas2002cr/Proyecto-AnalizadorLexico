@@ -115,7 +115,7 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 
 	// Literales
 	((\"[^\"] ~\")|(\"\")) {return symbol(sym.L_SAN_NICOLAS);}
-	//\"({LETRA}|{DIGIT}|{ESPACIO}|{SIMBOLO})*+\" | ("#"{DIGIT}{DIGIT}) {lexeme=yytext(); line=yyline; return LITERAL_STRING;}
+	//\"({LETER}|{DIGIT}|{ESPACIO}|{SYMBOL})*+\" | ("#"{DIGIT}{DIGIT}) {lexeme=yytext(); line=yyline; return LITERAL_STRING;}
 	("#"{DIGIT}+) {return symbol(sym.L_SAN_NICOLAS);}
 	("(-"{DIGIT}+")")|{DIGIT}+ {return symbol(sym.L_PAPA_NOEL);} // Un numero entero
 
@@ -141,6 +141,44 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 	/* whitespace */
 	{WhiteSpace}                   { /* ignore */ }
 }
+
+
+
+
+// |-------------------- RECONOCER ERRORES --------------------| //
+// Identificadores
+//identificador mayor a 127 caracteres
+{LETER}(({LETER}|{DIGIT}){127})({LETER}|{DIGIT})* {return new Symbol(sym.ERROR_IDENTIFICADOR, yyline, yycolumn, yytext());}
+//identificador no comienza con DIGIT
+(({DIGIT}+)({LETER}|{ACCENT}))(({LETER}|{DIGIT}|{SYMBOL}|{ACCENT}))* {return new Symbol(sym.ERROR_IDENTIFICADOR, yyline, yycolumn, yytext());}
+//identificador no lleva SYMBOLs
+({LETER}|{ACCENT}|{SYMBOL})(({LETER}|{DIGIT}|{SYMBOL}|{ACCENT}))+ {return new Symbol(sym.ERROR_IDENTIFICADOR, yyline, yycolumn, yytext());}
+
+// Flotantes
+// 12.12.12...
+{DIGIT}+"."{DIGIT}+("."{DIGIT}*)+ {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+// .12e12 / .12e / .12  | 12.23e-23.12
+("."{DIGIT}+([eE][-]?{DIGIT}*)?) | ({DIGIT}+"."{DIGIT}+([eE][-]?)({DIGIT}*"."{DIGIT}*))* {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+// 12ab.12 | ab12.12
+({DIGIT}+{LETER}+"."{DIGIT}+) | ({LETER}+{DIGIT}+"."{DIGIT}+) {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+// 12.12ab | 12.ab12
+({DIGIT}+"."{DIGIT}+{LETER}+) | ({DIGIT}+"."{LETER}+{DIGIT}+) {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+// ab.12ab | ab.ab12
+({LETER}+"."{DIGIT}+{LETER}+) | ({LETER}+"."{LETER}+{DIGIT}+) {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+// 12. | 12e.
+({DIGIT}+{LETER}*".") {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+// 3,14
+{DIGIT}+","{DIGIT}+ {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+
+// Literales
+"#"{LETER}+ {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+'[^'] ~' {return new Symbol(sym.ERROR_LITERAL, yyline, yycolumn, yytext());}
+
+// Comentarios
+@[^@]* {return new Symbol(sym.error, yyline, yycolumn, yytext());}
+// /_[^]*_/{ return new Symbol(sym.error, yyline, yycolumn, yytext()); }
+
+
 
 /* error fallback */
 [^] {return symbol(sym.error);}

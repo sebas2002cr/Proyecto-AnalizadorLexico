@@ -6,13 +6,67 @@ import lexical.CodeLexer;
 action code {: :}
 
 parser code {:
-	CodeLexer lex;
+	
+    @Override
+    protected int error_sync_size(){
+        return 1;
+    }
 
-	@SuppressWarnings("deprecation")
-	public parser(CodeLexer lex) {
-		this.lex = lex;
-		this.symbolFactory = new DefaultSymbolFactory();
-	}
+    private Symbol tokenError;
+
+    // Metodo al que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s)
+    {
+        try
+        {
+            String lexema = s.value.toString();
+            int fila = s.left + 1;
+            int columna = s.right;
+            tokenError = s;
+
+            //System.err.println("Error sintactico en la linea: " + fila + " y columna: " + columna + ". No se esperaba el componente: " + lexema);
+        }catch(Exception e) {}
+    }
+
+    // Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        try
+        {
+            String lexema = s.value.toString();
+            int fila = s.left + 1;
+            int columna = s.right;
+
+            String mensaje = "Error sintáctico irrecuperable, con el símbolo: " + lexema;
+            ErrorUI(mensaje, lexema, fila, columna);
+
+            //System.err.println("Error sintactico inrrecuperable en la linea: " + fila + " y columna: " + columna + ". No se esperaba el componente: " + lexema);
+        }catch(Exception e) {}
+    }
+
+    public void report_error(String message, Object info)
+    {
+        if (info instanceof String){
+            System.out.println(message);
+        }
+        else {
+            if (info instanceof Symbol){
+                String m = "Error sintático en: " + message;
+                Symbol s = (Symbol)info;
+                m += ", con el símbolo: \"" + s.value.toString() + "\"";
+                ErrorUI(m, s.value.toString(), (s.left+1), s.right);
+            }else{
+                System.err.println(message);
+            }
+        }
+    }
+
+    public void ErrorUI(String pMsg, String token, int linea, int columna)
+    {
+        String msg = pMsg + ". En la línea: " + (linea) + ", columna: " + (columna) + ".";
+
+        Main.miInstancia.agregarErrorSintactico(msg);
+    }
 :}
 
 init with {: :};
@@ -64,16 +118,24 @@ terminal ELFO, HADA, DUENDE, ENVUELVE, HACE, REVISA, ENVIA, CORTA;
 terminal ENTREGA, COMA, DOS_PUNTOS;
 terminal FUNCTION, MAIN, LOCAL;
 
+terminal ERROR_IDENTIFICADOR,
+        ERROR_LITERAL;
+
 // no terminales
 non terminal navidad, bolsa_navidenna, funcion, funcion_main;
 non terminal parametros, parametro, tipo, array, mas_parametros;
 non terminal asignar_variable, asignar_variable_declarada, declarar_asignar_variable;
 non terminal bloque_codigo, linea_codigo, codigo_multilinea;
 non terminal regalo, literal, llamada_funcion;
+non terminal operador_aritmeticos_binarios, operador_aritmeticos_unarios;
 non terminal expresiones, mas_expresiones;
 non terminal condicional, condicional_if, condicionales_elif, condicional_elif, condicional_else;
 non terminal ciclo_for, ciclo_do_until;
 non terminal Symbol epsilon;
+non terminal expr_aritmeticas, _expr_aritmeticas ,  tokens;
+
+
+// ------------------------------ Start --------------------------------------------------------------------------------
 
 start with navidad;
 
@@ -110,12 +172,27 @@ codigo_multilinea ::= linea_codigo codigo_multilinea | epsilon;
 bloque_codigo ::= linea_codigo | FIN_REGALO | ABREREGALO codigo_multilinea CIERRAREGALO;
 
 // faltan producciones de print y read
-regalo ::= literal | PERSONA | llamada_funcion; // añadir expresiones lógicas y aritméticas
+
 literal ::= L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL;
 llamada_funcion ::= PERSONA ABRECUENTO expresiones CIERRECUENTO;
+operador_aritmeticos_binarios ::=  RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO;
+operador_aritmeticos_unarios ::= GRINCH | QUIEN;
+// ------------------------------ EXPRESIONES --------------------------------------------------------------------------------
+
+regalo ::= expr_aritmeticas | llamada_funcion; // añadir expresiones lógicas y aritméticas;
+
+expr_aritmeticas ::= tokens _expr_aritmeticas
+					| ABRECUENTO expr_aritmeticas CIERRECUENTO _expr_aritmeticas; 
+
+_expr_aritmeticas ::= operador_aritmeticos_binarios expr_aritmeticas | operador_aritmeticos_unarios expr_aritmeticas | epsilon;
+
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;
+
+// ------------------------------ Start --------------------------------------------------------------------------------
+
+
 
 // Corregir: el if sin elif ni else ha de terminar con |, corregir esto para que no sea necesario
 // condicional ::= condicional_if condicionales_elif;
@@ -134,3 +211,4 @@ ciclo_for ::= ENVUELVE ABRECUENTO asignar_variable COMA regalo COMA regalo CIERR
 ciclo_do_until ::= HACE bloque_codigo REVISA ABRECUENTO regalo CIERRECUENTO;
 
 epsilon ::= {: RESULT = new Symbol(-1); :};
+tokens ::= PERSONA | literal; 
