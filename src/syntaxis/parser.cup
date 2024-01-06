@@ -140,19 +140,19 @@ terminal ERROR_IDENTIFICADOR,  // Terminal para errores en identificadores
         ERROR_LITERAL;        // Terminal para errores en literales
 
 
+
 // no terminales
 non terminal navidad, bolsa_navidenna, funcion, funcion_main, inicio;
 non terminal parametros, parametro, tipo, array, mas_parametros;
 non terminal asignar_variable, asignar_variable_declarada, declarar_asignar_variable;
 non terminal bloque_codigo, linea_codigo, codigo_multilinea, codigo_contenido;
 non terminal regalo, literal, llamada_funcion;
-non terminal operador_aritmeticos_binarios, operador_aritmeticos_unarios;
+non terminal tokens, expresiones_AL, _expresiones_AL, _operadores_aritmeticos ;
 non terminal expresiones, mas_expresiones;
 non terminal condicional, condicional_if, condicionales_elif, condicional_elif, condicional_else;
 non terminal ciclo_for, ciclo_do_until;
 non terminal prueba;
 non terminal Symbol epsilon;
-non terminal expr_aritmeticas, _expr_aritmeticas ,  tokens;
 
 
 // ------------------------------ Start --------------------------------------------------------------------------------
@@ -214,27 +214,22 @@ regalo ::=
     literal |
     PERSONA |
     llamada_funcion |
-    ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :} |
-    expresiones_aritmeticas |
-    expresiones_logicas;
+    ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :} ;
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;
 
-// Nuevas producciones para expresiones aritméticas
-expresiones_aritmeticas ::= expresiones_aritmeticas operador_aritmeticos_binarios expresiones_aritmeticas |
-                          operador_aritmeticos_unarios expresiones_aritmeticas |
-                          PERSONA |
-                          literal |
-                          llamada_funcion;
+// ------------------------------ EXPRESIONES NUEVA --------------------------------------------------------------------------------
+expresiones_AL ::= tokens _expresiones_AL
+                    | llamada_funcion _expresiones_AL
+                    | ABRECUENTO expresiones_AL CIERRECUENTO _expresiones_AL;
 
-operador_aritmeticos_binarios ::= RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO;
-operador_aritmeticos_unarios ::= GRINCH | QUIEN;
+_expresiones_AL ::= _operadores_aritmeticos expresiones_AL | epsilon;
 
-// Nuevas producciones para expresiones lógicas
-expresiones_logicas ::= expresiones_aritmeticas operador_logico expresiones_aritmeticas;
-operador_logico ::= MELCHOR | GASPAR | BALTASAR;
+// ------------------------------ Símbolos -----------------------------------------------------------------------------
+_operadores_aritmeticos ::= RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO;
 
+tokens ::=  PERSONA | L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL ;
 
 // ------------------------------ CONDICIONALES --------------------------------------------------------------------------------
 
@@ -258,4 +253,3 @@ ciclo_do_until ::=
 	ABRECUENTO regalo CIERRECUENTO;
 
 epsilon ::= {: RESULT = new Symbol(-1); :};
-tokens ::= PERSONA | literal; 

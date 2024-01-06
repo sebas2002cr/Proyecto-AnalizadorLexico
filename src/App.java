@@ -20,7 +20,9 @@ public class App {
             }
         } catch (Exception e) {
             // Captura y maneja cualquier excepción que pueda ocurrir durante la ejecución.
-            e.printStackTrace(); // Imprime la traza de la excepción (para fines de depuración).
+            e.printStackTrace(); // Imprime la traza de la excepción (para fines de
+            // depuración).
+
         }
     }
 }

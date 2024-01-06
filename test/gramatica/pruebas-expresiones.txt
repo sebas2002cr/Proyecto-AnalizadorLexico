@@ -1,0 +1,6 @@
+
+a + b
+c * (d - 2)
+x > 5 && y <= 10
+x +* y // Expresión inválida
+(3 + 4) >  // Expresión inválida
