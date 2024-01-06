@@ -74,54 +74,71 @@ parser code {:
 init with {: :};
 
 scan with {: return lex.next_token(); :};
-
 // operadores
-terminal RUDOLPH, DASHER, COMET, VIXEN, TOTIN, RENILLO,
-		GRINCH,
-        QUIEN,
-        KNECHT_RUPRECHT,
-        KRAMPUS,
-        BELSNICKEL,
-        ZWARTE_PIET,
-        SNOWBALL_ALABASTRO,
-        PEPPER_MINSTIX,
-        MELCHOR,
-        GASPAR,
-        BALTASAR;
+terminal RUDOLPH,      // Operador de suma
+        DASHER,       // Operador de resta
+        COMET,        // Operador de multiplicación
+        VIXEN,        // Operador de división
+        TOTIN,        // Operador de módulo
+        RENILLO,      // Operador de potencia
+		GRINCH,       // Operador de incremento unario
+        QUIEN,        // Operador de decremento unario
+        KNECHT_RUPRECHT, // Operador relacional mayor o igual
+        KRAMPUS,      // Operador relacional mayor
+        BELSNICKEL,   // Operador relacional menor o igual
+        ZWARTE_PIET,  // Operador relacional menor
+        SNOWBALL_ALABASTRO, // Operador relacional diferente
+        PEPPER_MINSTIX,     // Operador relacional igual
+        MELCHOR,      // Operador lógico de conjunción
+        GASPAR,       // Operador lógico de disyunción
+        BALTASAR;     // Operador lógico de negación
 
 // tipos
-terminal PERSONA,
-        PAPA_NOEL,
-        SANTA_CLAUS,
-        SAN_NICOLAS,
-        NINO_JESUS,
-		COLACHO,
-		SANTA;
+terminal PERSONA,        // Tipo INT
+        PAPA_NOEL,      // Tipo BOOLEAN
+        SANTA_CLAUS,    // Tipo STRING
+        SAN_NICOLAS,    // Tipo CHAR
+        NINO_JESUS,     // Tipo FLOAT
+		COLACHO,        // Tipo ARRAY
+		SANTA;          // Tipo SANTA
 
 // literales
-terminal L_COLACHO,
-		L_SAN_NICOLAS,
-		L_PAPA_NOEL;
+terminal L_COLACHO,      // Literal FLOAT
+		L_SAN_NICOLAS,  // Literal STRING
+		L_PAPA_NOEL;    // Literal INT
 
 // símbolos
-terminal ABRECUENTO,
-		CIERRECUENTO,
-		ABREEMPAQUE,
-		CIERRAEMPAQUE,
-		ABREREGALO,
-		CIERRAREGALO,
-		FIN_REGALO;
+terminal ABRECUENTO,     // Símbolo "("
+		CIERRECUENTO,   // Símbolo ")"
+		ABREEMPAQUE,    // Símbolo "["
+		CIERRAEMPAQUE,  // Símbolo "]"
+		ABREREGALO,     // Símbolo "{"
+		CIERRAREGALO,   // Símbolo "}"
+		FIN_REGALO;     // Símbolo "|"
 
 // PRINT - READ
-terminal NARRA, ESCUCHA;
+terminal NARRA,           // Palabra clave PRINT
+        ESCUCHA;         // Palabra clave READ
 
 // estructuras
-terminal ELFO, HADA, DUENDE, ENVUELVE, HACE, REVISA, ENVIA, CORTA;
-terminal ENTREGA, COMA, DOS_PUNTOS;
-terminal FUNCTION, MAIN, LOCAL;
+terminal ELFO,            // Palabra clave IF
+        HADA,             // Palabra clave ELIF
+        DUENDE,           // Palabra clave ELSE
+        ENVUELVE,         // Palabra clave FOR
+        HACE,             // Palabra clave DO
+        REVISA,           // Palabra clave UNTIL
+        ENVIA,            // Palabra clave RETURN
+        CORTA;            // Palabra clave BREAK
+terminal ENTREGA,         // Operador de asignación ":="
+        COMA,             // Símbolo ","
+        DOS_PUNTOS;       // Símbolo ":"
+terminal FUNCTION,        // Palabra clave FUNCTION
+        MAIN,            // Palabra clave MAIN
+        LOCAL;           // Palabra clave LOCAL
 
-terminal ERROR_IDENTIFICADOR,
-        ERROR_LITERAL;
+terminal ERROR_IDENTIFICADOR,  // Terminal para errores en identificadores
+        ERROR_LITERAL;        // Terminal para errores en literales
+
 
 // no terminales
 non terminal navidad, bolsa_navidenna, funcion, funcion_main, inicio;
@@ -191,19 +208,35 @@ codigo_multilinea ::= linea_codigo codigo_multilinea | epsilon;
 codigo_contenido ::= ABREREGALO codigo_multilinea CIERRAREGALO;
 bloque_codigo ::= linea_codigo | FIN_REGALO | codigo_contenido;
 
-// añadir expresiones lógicas y aritméticas
+// ------------------------------ EXPRESIONES --------------------------------------------------------------------------------
+
 regalo ::=
-	literal |
-	PERSONA |
-	llamada_funcion |
-	ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :};
-literal ::= L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL;
-llamada_funcion ::=
-	PERSONA:f {: tablas.simbolo(new LexemaNombre("llamada_funcion", f)); :}
-	ABRECUENTO expresiones CIERRECUENTO;
+    literal |
+    PERSONA |
+    llamada_funcion |
+    ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :} |
+    expresiones_aritmeticas |
+    expresiones_logicas;
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;
+
+// Nuevas producciones para expresiones aritméticas
+expresiones_aritmeticas ::= expresiones_aritmeticas operador_aritmeticos_binarios expresiones_aritmeticas |
+                          operador_aritmeticos_unarios expresiones_aritmeticas |
+                          PERSONA |
+                          literal |
+                          llamada_funcion;
+
+operador_aritmeticos_binarios ::= RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO;
+operador_aritmeticos_unarios ::= GRINCH | QUIEN;
+
+// Nuevas producciones para expresiones lógicas
+expresiones_logicas ::= expresiones_aritmeticas operador_logico expresiones_aritmeticas;
+operador_logico ::= MELCHOR | GASPAR | BALTASAR;
+
+
+// ------------------------------ CONDICIONALES --------------------------------------------------------------------------------
 
 // Añadir que se puedan declarar condicionales con solo una línea de código, no funciona con la línea de código por el for y por las condicionales, que son las producciones que no terminan con FIN_REGALO
 condicional ::= condicional_if condicionales_elif;
