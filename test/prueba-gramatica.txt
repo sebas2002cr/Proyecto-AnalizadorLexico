@@ -16,29 +16,6 @@ function prueba2:string (var0: boolean) {
 
 function prueba3:char () local var: char |
 
-function prueba_if: boolean () {
-	if(true) |
-	elif(false) |
-	elif(false) |
-	else |
-
-	if(true) {
-
-	} else {
-
-	}
-
-	if(true){
-
-	}|
-
-	if(true) if(true)|||
-
-	if(true){
-		if(true)||
-	}|
-}
-
 function ciclos:char () {
 	for(var:int := 0, algo(), otroalgo()){
 
@@ -49,4 +26,24 @@ function ciclos:char () {
 		var2 := 10 |
 		algo(1, 2) |
 	} until(algo()) |
+}
+
+function print_read:char[1] () {
+	local var1:string := read() |
+	print(var1) |
+	return var1 |
+	break |
+}
+
+function prueba_if: boolean () {
+	if(true){} elif(true){} elif(true){} else{}
+	if(true){} elif(true){} elif(true){}
+	if(true){} else{}
+	if(true){
+		if(false){
+			local var1:string := read() |
+		} else {
+
+		}
+	}
 }

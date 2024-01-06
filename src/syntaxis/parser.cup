@@ -3,7 +3,9 @@ package syntaxis;
 import java_cup.runtime.*;
 import lexical.CodeLexer;
 
-action code {: :}
+action code {:
+	ListaTablasSimbolos tablas = new ListaTablasSimbolos();
+:}
 
 parser code {:
 	
@@ -122,15 +124,16 @@ terminal ERROR_IDENTIFICADOR,
         ERROR_LITERAL;
 
 // no terminales
-non terminal navidad, bolsa_navidenna, funcion, funcion_main;
+non terminal navidad, bolsa_navidenna, funcion, funcion_main, inicio;
 non terminal parametros, parametro, tipo, array, mas_parametros;
 non terminal asignar_variable, asignar_variable_declarada, declarar_asignar_variable;
-non terminal bloque_codigo, linea_codigo, codigo_multilinea;
+non terminal bloque_codigo, linea_codigo, codigo_multilinea, codigo_contenido;
 non terminal regalo, literal, llamada_funcion;
 non terminal operador_aritmeticos_binarios, operador_aritmeticos_unarios;
 non terminal expresiones, mas_expresiones;
 non terminal condicional, condicional_if, condicionales_elif, condicional_elif, condicional_else;
 non terminal ciclo_for, ciclo_do_until;
+non terminal prueba;
 non terminal Symbol epsilon;
 non terminal expr_aritmeticas, _expr_aritmeticas ,  tokens;
 
@@ -139,22 +142,37 @@ non terminal expr_aritmeticas, _expr_aritmeticas ,  tokens;
 
 start with navidad;
 
-navidad ::= funcion navidad | funcion_main bolsa_navidenna;
+navidad ::= inicio {: tablas.guardar("test/resultado-sintactico.txt"); :};
+
+inicio ::= funcion inicio | funcion_main bolsa_navidenna;
 
 bolsa_navidenna ::= funcion bolsa_navidenna | epsilon;
-funcion ::= FUNCTION PERSONA DOS_PUNTOS tipo ABRECUENTO parametros CIERRECUENTO bloque_codigo;
-funcion_main ::= FUNCTION MAIN ABRECUENTO CIERRECUENTO bloque_codigo;
+funcion ::=
+	FUNCTION PERSONA:nf DOS_PUNTOS tipo:tf {: tablas.tabla(new Funcion(nf, tf)); :}
+	ABRECUENTO parametros CIERRECUENTO {: tablas.agregarParametros("parametro"); :}
+	bloque_codigo;
+funcion_main ::= FUNCTION MAIN ABRECUENTO CIERRECUENTO {: tablas.tabla(new Funcion()); :} bloque_codigo;
 
 parametros ::= parametro | parametro COMA mas_parametros | epsilon;
 mas_parametros ::= parametro | parametro COMA mas_parametros;
-parametro ::= PERSONA DOS_PUNTOS tipo;
-tipo ::= PAPA_NOEL | SANTA_CLAUS | SAN_NICOLAS | NINO_JESUS | COLACHO | array;
+parametro ::= PERSONA:np {: RESULT = np; :} DOS_PUNTOS tipo:tp {: tablas.simbolo(new Parametro(np, tp)); :};
+tipo ::=
+	PAPA_NOEL:t {: RESULT = t; :} |
+	SANTA_CLAUS:t {: RESULT = t; :} |
+	SAN_NICOLAS:t {: RESULT = t; :} |
+	NINO_JESUS:t {: RESULT = t; :} |
+	COLACHO:t {: RESULT = t; :} |
+	array:t {: RESULT = t; :};
 array ::=
-	PAPA_NOEL ABREEMPAQUE L_PAPA_NOEL CIERRAEMPAQUE |
-	NINO_JESUS ABREEMPAQUE L_PAPA_NOEL CIERRAEMPAQUE;
+	PAPA_NOEL:t ABREEMPAQUE L_PAPA_NOEL:n CIERRAEMPAQUE {: RESULT = t + "[" + n + "]"; :} |
+	NINO_JESUS:t ABREEMPAQUE L_PAPA_NOEL:n CIERRAEMPAQUE {: RESULT = t + "[" + n + "]"; :};
 
-asignar_variable_declarada ::= PERSONA ENTREGA regalo;
-declarar_asignar_variable ::= parametro ENTREGA regalo;
+asignar_variable_declarada ::=
+	PERSONA:nv {: tablas.simbolo(new LexemaNombre("asignacion", nv)); :}
+	ENTREGA regalo;
+declarar_asignar_variable ::=
+	parametro:np {: tablas.simbolo(new LexemaNombre("declaracion_asignacion", np)); :}
+	ENTREGA regalo;
 asignar_variable ::= asignar_variable_declarada | declarar_asignar_variable;
 
 linea_codigo ::=
@@ -163,52 +181,48 @@ linea_codigo ::=
 	asignar_variable_declarada FIN_REGALO | // asignación de variable ya declarada
 	LOCAL declarar_asignar_variable FIN_REGALO | // se declara y asigna variable
 	condicional | // condicionales
-	ENVIA regalo FIN_REGALO | // return
-	CORTA FIN_REGALO | // break
+	ENVIA:l {: tablas.simbolo(new Lexema(l)); :} regalo FIN_REGALO | // return
+	CORTA:l {: tablas.simbolo(new Lexema(l)); :} FIN_REGALO | // break
 	ciclo_for |
-	ciclo_do_until FIN_REGALO;
+	ciclo_do_until FIN_REGALO |
+	NARRA:l {: tablas.simbolo(new Lexema(l)); :} ABRECUENTO regalo CIERRECUENTO FIN_REGALO; // print
 
 codigo_multilinea ::= linea_codigo codigo_multilinea | epsilon;
-bloque_codigo ::= linea_codigo | FIN_REGALO | ABREREGALO codigo_multilinea CIERRAREGALO;
+codigo_contenido ::= ABREREGALO codigo_multilinea CIERRAREGALO;
+bloque_codigo ::= linea_codigo | FIN_REGALO | codigo_contenido;
 
-// faltan producciones de print y read
-
+// añadir expresiones lógicas y aritméticas
+regalo ::=
+	literal |
+	PERSONA |
+	llamada_funcion |
+	ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :};
 literal ::= L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL;
-llamada_funcion ::= PERSONA ABRECUENTO expresiones CIERRECUENTO;
-operador_aritmeticos_binarios ::=  RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO;
-operador_aritmeticos_unarios ::= GRINCH | QUIEN;
-// ------------------------------ EXPRESIONES --------------------------------------------------------------------------------
-
-regalo ::= expr_aritmeticas | llamada_funcion; // añadir expresiones lógicas y aritméticas;
-
-expr_aritmeticas ::= tokens _expr_aritmeticas
-					| ABRECUENTO expr_aritmeticas CIERRECUENTO _expr_aritmeticas; 
-
-_expr_aritmeticas ::= operador_aritmeticos_binarios expr_aritmeticas | operador_aritmeticos_unarios expr_aritmeticas | epsilon;
-
+llamada_funcion ::=
+	PERSONA:f {: tablas.simbolo(new LexemaNombre("llamada_funcion", f)); :}
+	ABRECUENTO expresiones CIERRECUENTO;
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;
 
-// ------------------------------ Start --------------------------------------------------------------------------------
-
-
-
-// Corregir: el if sin elif ni else ha de terminar con |, corregir esto para que no sea necesario
-// condicional ::= condicional_if condicionales_elif;
-// condicionales_elif ::= condicional_elif condicionales_elif | epsilon | condicional_else;
-condicional ::= condicional_if FIN_REGALO | condicional_if condicionales_elif condicional_else;
-condicionales_elif ::= condicional_elif condicionales_elif | epsilon;
-condicional_if ::= ELFO ABRECUENTO regalo CIERRECUENTO bloque_codigo;
-condicional_elif ::= HADA ABRECUENTO regalo CIERRECUENTO bloque_codigo;
-condicional_else ::= DUENDE bloque_codigo;
+// Añadir que se puedan declarar condicionales con solo una línea de código, no funciona con la línea de código por el for y por las condicionales, que son las producciones que no terminan con FIN_REGALO
+condicional ::= condicional_if condicionales_elif;
+condicionales_elif ::= condicional_elif condicionales_elif | condicional_else | epsilon;
+condicional_if ::= ELFO:l {: tablas.simbolo(new Lexema(l)); :} ABRECUENTO regalo CIERRECUENTO codigo_contenido;
+condicional_elif ::= HADA:l {: tablas.simbolo(new Lexema(l)); :} ABRECUENTO regalo CIERRECUENTO codigo_contenido;
+condicional_else ::= DUENDE:l {: tablas.simbolo(new Lexema(l)); :} codigo_contenido;
 
 // sustituir el primer regalo por una expresión lógica
 // sustituir el segundo regalo por una acción cómo una operación aritmética o una llamada a función
-ciclo_for ::= ENVUELVE ABRECUENTO asignar_variable COMA regalo COMA regalo CIERRECUENTO bloque_codigo;
+ciclo_for ::=
+	ENVUELVE:l {: tablas.simbolo(new Lexema(l)); :}
+	ABRECUENTO asignar_variable COMA regalo COMA regalo CIERRECUENTO bloque_codigo;
 
 // sustituir el regalo por una expresión lógica
-ciclo_do_until ::= HACE bloque_codigo REVISA ABRECUENTO regalo CIERRECUENTO;
+ciclo_do_until ::=
+	HACE:d {: tablas.simbolo(new Lexema(d)); :}
+	bloque_codigo REVISA:u {: tablas.simbolo(new Lexema(u)); :}
+	ABRECUENTO regalo CIERRECUENTO;
 
 epsilon ::= {: RESULT = new Symbol(-1); :};
 tokens ::= PERSONA | literal; 

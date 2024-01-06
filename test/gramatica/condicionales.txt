@@ -5,3 +5,24 @@ if(true) {
 } else {
 
 }
+
+if(true) |
+elif(false) |
+elif(false) |
+else |
+
+if(true) {
+
+} else {
+
+}
+
+if(true){
+
+}|
+
+if(true) if(true)|||
+
+if(true){
+	if(true)||
+}|
