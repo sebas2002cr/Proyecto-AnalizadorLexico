@@ -226,8 +226,9 @@ expresiones_AL ::= tokens _expresiones_AL
 
 _expresiones_AL ::= _operadores_aritmeticos expresiones_AL | epsilon;
 
+
 // ------------------------------ Símbolos -----------------------------------------------------------------------------
-_operadores_aritmeticos ::= RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO;
+_operadores_aritmeticos ::= RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO | GRINCH | QUIEN;
 
 tokens ::=  PERSONA | L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL ;
 
