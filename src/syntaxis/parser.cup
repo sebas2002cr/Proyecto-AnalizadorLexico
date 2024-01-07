@@ -8,67 +8,13 @@ action code {:
 :}
 
 parser code {:
-	
-    @Override
-    protected int error_sync_size(){
-        return 1;
-    }
+    CodeLexer lex;
 
-    private Symbol tokenError;
-
-    // Metodo al que se llama automaticamente ante algun error sintactico
-    public void syntax_error(Symbol s)
-    {
-        try
-        {
-            String lexema = s.value.toString();
-            int fila = s.left + 1;
-            int columna = s.right;
-            tokenError = s;
-
-            //System.err.println("Error sintactico en la linea: " + fila + " y columna: " + columna + ". No se esperaba el componente: " + lexema);
-        }catch(Exception e) {}
-    }
-
-    // Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores
-    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
-    {
-        try
-        {
-            String lexema = s.value.toString();
-            int fila = s.left + 1;
-            int columna = s.right;
-
-            String mensaje = "Error sintáctico irrecuperable, con el símbolo: " + lexema;
-            ErrorUI(mensaje, lexema, fila, columna);
-
-            //System.err.println("Error sintactico inrrecuperable en la linea: " + fila + " y columna: " + columna + ". No se esperaba el componente: " + lexema);
-        }catch(Exception e) {}
-    }
-
-    public void report_error(String message, Object info)
-    {
-        if (info instanceof String){
-            System.out.println(message);
-        }
-        else {
-            if (info instanceof Symbol){
-                String m = "Error sintático en: " + message;
-                Symbol s = (Symbol)info;
-                m += ", con el símbolo: \"" + s.value.toString() + "\"";
-                ErrorUI(m, s.value.toString(), (s.left+1), s.right);
-            }else{
-                System.err.println(message);
-            }
-        }
-    }
-
-    public void ErrorUI(String pMsg, String token, int linea, int columna)
-    {
-        String msg = pMsg + ". En la línea: " + (linea) + ", columna: " + (columna) + ".";
-
-        Main.miInstancia.agregarErrorSintactico(msg);
-    }
+	@SuppressWarnings("deprecation")
+	public parser(CodeLexer lex) {
+		this.lex = lex;
+		this.symbolFactory = new DefaultSymbolFactory();
+	}
 :}
 
 init with {: :};
@@ -94,18 +40,19 @@ terminal RUDOLPH,      // Operador de suma
         BALTASAR;     // Operador lógico de negación
 
 // tipos
-terminal PERSONA,        // Tipo INT
-        PAPA_NOEL,      // Tipo BOOLEAN
-        SANTA_CLAUS,    // Tipo STRING
-        SAN_NICOLAS,    // Tipo CHAR
-        NINO_JESUS,     // Tipo FLOAT
-		COLACHO,        // Tipo ARRAY
-		SANTA;          // Tipo SANTA
+terminal PERSONA,       // Identificador
+        PAPA_NOEL,      // Tipo INT
+        SANTA_CLAUS,    // Tipo BOOLEAN
+        SAN_NICOLAS,    // Tipo STRING
+        NINO_JESUS,     // Tipo CHAR
+		COLACHO,        // Tipo FLOAT
+		SANTA;          // Tipo ARRAY
 
 // literales
 terminal L_COLACHO,      // Literal FLOAT
-		L_SAN_NICOLAS,  // Literal STRING
-		L_PAPA_NOEL;    // Literal INT
+		 L_SAN_NICOLAS,  // Literal STRING
+		 L_PAPA_NOEL,    // Literal INT
+         L_SANTA_CLAUS; // Literal BOOLEAN
 
 // símbolos
 terminal ABRECUENTO,     // Símbolo "("
@@ -166,13 +113,14 @@ inicio ::= funcion inicio | funcion_main bolsa_navidenna;
 bolsa_navidenna ::= funcion bolsa_navidenna | epsilon;
 funcion ::=
 	FUNCTION PERSONA:nf DOS_PUNTOS tipo:tf {: tablas.tabla(new Funcion(nf, tf)); :}
-	ABRECUENTO parametros CIERRECUENTO {: tablas.agregarParametros("parametro"); :}
+	ABRECUENTO parametros CIERRECUENTO {: tablas.parametro("parametro"); :}
 	bloque_codigo;
 funcion_main ::= FUNCTION MAIN ABRECUENTO CIERRECUENTO {: tablas.tabla(new Funcion()); :} bloque_codigo;
 
 parametros ::= parametro | parametro COMA mas_parametros | epsilon;
 mas_parametros ::= parametro | parametro COMA mas_parametros;
-parametro ::= PERSONA:np {: RESULT = np; :} DOS_PUNTOS tipo:tp {: tablas.simbolo(new Parametro(np, tp)); :};
+parametro ::= PERSONA:np DOS_PUNTOS tipo:tp {: tablas.simbolo(new Parametro(np, tp)); :};
+
 tipo ::=
 	PAPA_NOEL:t {: RESULT = t; :} |
 	SANTA_CLAUS:t {: RESULT = t; :} |
@@ -185,16 +133,16 @@ array ::=
 	NINO_JESUS:t ABREEMPAQUE L_PAPA_NOEL:n CIERRAEMPAQUE {: RESULT = t + "[" + n + "]"; :};
 
 asignar_variable_declarada ::=
-	PERSONA:nv {: tablas.simbolo(new LexemaNombre("asignacion", nv)); :}
+	PERSONA:nv {: tablas.parametro("asignacion"); :}
 	ENTREGA regalo;
 declarar_asignar_variable ::=
-	parametro:np {: tablas.simbolo(new LexemaNombre("declaracion_asignacion", np)); :}
+	parametro:p {: tablas.parametro("declaracion_asignacion"); :}
 	ENTREGA regalo;
 asignar_variable ::= asignar_variable_declarada | declarar_asignar_variable;
 
 linea_codigo ::=
 	regalo FIN_REGALO | // expresión
-	LOCAL parametros FIN_REGALO | // declaración de una o varias variables
+	LOCAL parametros {: tablas.parametro("declaracion"); :} FIN_REGALO | // declaración de una o varias variables
 	asignar_variable_declarada FIN_REGALO | // asignación de variable ya declarada
 	LOCAL declarar_asignar_variable FIN_REGALO | // se declara y asigna variable
 	condicional | // condicionales
@@ -214,7 +162,12 @@ regalo ::=
     literal |
     PERSONA |
     llamada_funcion |
-    ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :} ;
+    ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :};
+
+literal ::= L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL | L_SANTA_CLAUS;
+llamada_funcion ::=
+	PERSONA:f {: tablas.simbolo(new LexemaNombre("llamada_funcion", f)); :}
+	ABRECUENTO expresiones CIERRECUENTO;
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;

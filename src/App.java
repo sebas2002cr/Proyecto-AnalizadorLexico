@@ -10,7 +10,7 @@ public class App {
                 if (args[0].equals("-lg"))
                     Lexer.generate();
                 if (args[0].equals("-la")) {
-                    Lexer.analyze("/test/lexico/codigo.txt", "/test/lexemas.txt", "/test/errores.txt");
+                    Lexer.analyze("/test/lexico/codigo.txt", "/test/lexico/lexemas.txt", "/test/lexico/errores.txt");
                     System.out.println("\nSe leyó el archivo llamado \"codigo.txt\", para hacer el análisis léxico ");
                     System.out.println("Análisis léxico escrito en \"lexemas.txt\" ");
                     System.out.println("Análisis de Errores léxicos escrito en \"errores.txt\" ");
@@ -18,6 +18,7 @@ public class App {
             } else {
                 Syntax.parse("/test/prueba-gramatica.txt");
             }
+            System.out.println("\nResultado generado en resultado-sintactico.txt");
         } catch (Exception e) {
             // Captura y maneja cualquier excepción que pueda ocurrir durante la ejecución.
             e.printStackTrace(); // Imprime la traza de la excepción (para fines de

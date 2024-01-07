@@ -25,7 +25,7 @@ public class ListaTablasSimbolos {
 		this.parametros.add(parametro);
 	}
 
-	public void agregarParametros(String lexema){
+	public void parametro(String lexema){
 		for (Parametro parametro : this.parametros) {
 			parametro.setLexema(lexema);
 			this.ultimo.agregar(parametro);
@@ -97,6 +97,11 @@ class Lexema extends Simbolo {
 
 class Parametro extends Simbolo {
 	private String lexema, nombre, tipo;
+
+	public Parametro(String lexema, Object tupla){
+		System.out.println(tupla.getClass().getName());
+		this.setLexema(lexema);
+	}
 
 	public Parametro(Object nombre, Object tipo){
 		this.nombre = nombre.toString();

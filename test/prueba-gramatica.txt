@@ -46,4 +46,5 @@ function prueba_if: boolean () {
 
 		}
 	}
+	local var:boolean := true |
 }

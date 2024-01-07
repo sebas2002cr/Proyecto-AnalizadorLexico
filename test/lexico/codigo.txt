@@ -1,6 +1,7 @@
  function prueba2: int() {
 	local a: int |
 	local b: int |
-    a = a + b|
-    
+    a = a + b |
+	true |
+	false |
 }

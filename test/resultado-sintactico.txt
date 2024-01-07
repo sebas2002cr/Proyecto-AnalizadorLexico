@@ -9,41 +9,33 @@ funcion, NOMBRE: main, TIPO: null
 TABLA: prueba2
 funcion, NOMBRE: prueba2, TIPO: string
 parametro, NOMBRE: var0, TIPO: boolean
-asignacion, NOMBRE: var1
-asignacion, NOMBRE: var2
-asignacion, NOMBRE: var3
+declaracion, NOMBRE: var1, TIPO: string
+declaracion, NOMBRE: var2, TIPO: float
+declaracion, NOMBRE: var3, TIPO: int
+declaracion, NOMBRE: var4, TIPO: char
 llamada_funcion, NOMBRE: prueba3
-asignacion, NOMBRE: var4
 llamada_funcion, NOMBRE: prueba1
-asignacion, NOMBRE: var4
 llamada_funcion, NOMBRE: prueba1
 llamada_funcion, NOMBRE: prueba1
 
 TABLA: prueba3
 funcion, NOMBRE: prueba3, TIPO: char
-parametro, NOMBRE: var1, TIPO: string
-parametro, NOMBRE: var2, TIPO: float
-parametro, NOMBRE: var3, TIPO: int
-parametro, NOMBRE: var4, TIPO: char
+declaracion, NOMBRE: var, TIPO: char
 
 TABLA: ciclos
 funcion, NOMBRE: ciclos, TIPO: char
-parametro, NOMBRE: var, TIPO: char
 for
-declaracion_asignacion, NOMBRE: var
+declaracion_asignacion, NOMBRE: var, TIPO: int
 llamada_funcion, NOMBRE: algo
 llamada_funcion, NOMBRE: otroalgo
 do
-asignacion, NOMBRE: var2
-asignacion, NOMBRE: var2
 llamada_funcion, NOMBRE: algo
 until
 llamada_funcion, NOMBRE: algo
 
 TABLA: print_read
 funcion, NOMBRE: print_read, TIPO: char[1]
-parametro, NOMBRE: var, TIPO: int
-declaracion_asignacion, NOMBRE: var1
+declaracion_asignacion, NOMBRE: var1, TIPO: string
 read
 print
 return
@@ -51,7 +43,6 @@ break
 
 TABLA: prueba_if
 funcion, NOMBRE: prueba_if, TIPO: boolean
-parametro, NOMBRE: var1, TIPO: string
 if
 elif
 elif
@@ -63,7 +54,8 @@ if
 else
 if
 if
-declaracion_asignacion, NOMBRE: var1
+declaracion_asignacion, NOMBRE: var1, TIPO: string
 read
 else
+declaracion_asignacion, NOMBRE: var, TIPO: boolean
 

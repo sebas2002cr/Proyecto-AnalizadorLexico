@@ -47,8 +47,6 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 DocumentationComment = "/**" {CommentContent} "*"+ "/"
 CommentContent       = ( [^*] | \*+ [^/*] )*
 
-
-
 DecIntegerLiteral = 0 | [1-9][0-9]*
 
 %state STRING
@@ -78,6 +76,8 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 <YYINITIAL> "FUNCTION" {return symbol(sym.FUNCTION);}
 <YYINITIAL> "MAIN" {return symbol(sym.MAIN);}
 <YYINITIAL> "LOCAL" {return symbol(sym.LOCAL);}
+<YYINITIAL> "TRUE" {return symbol(sym.L_SANTA_CLAUS);}
+<YYINITIAL> "FALSE" {return symbol(sym.L_SANTA_CLAUS);}
 
 <YYINITIAL> {
 	// IDENTIFICADORES

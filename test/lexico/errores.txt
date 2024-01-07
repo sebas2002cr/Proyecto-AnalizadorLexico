@@ -1,7 +1,0 @@
-Token no reconocido: %, en la linea: 4, columna 6
-Token no reconocido: %, en la linea: 4, columna 7
-Token no reconocido: &, en la linea: 4, columna 54
-Token no reconocido: &, en la linea: 4, columna 55
-Token no reconocido: &, en la linea: 4, columna 56
-Token no reconocido: &, en la linea: 4, columna 57
-Token no reconocido: &, en la linea: 4, columna 58
