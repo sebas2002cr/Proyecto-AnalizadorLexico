@@ -1,52 +1,47 @@
- function prueba1:int[10] (var: int[10], var2: string) |
+ function prueba1:int[10](var: int[10], var2: string) |
 
- function lambda:char() return "h" |
+//function lambda:char() return "h" |
 
 function main() {
 
 }
 
-function prueba2:string (var0: boolean) {
-	local var1: string, var2: float |
-	local var3: int, var4: char |
-	var1 := var0 |
-	var2 := 10 |
-	var3 := prueba3() |
-	var4 := prueba1(1) |
-	var4 := prueba1(1, prueba1(), "prueba") |
-}
-
-function prueba3:char () local var: char |
-
-function ciclos:char () {
-	for(var:int := 0, algo(), otroalgo()){
-
-	}
-
-	do {
-		var2 := 10 |
-		var2 := 10 |
-		algo(1, 2) |
-	} until(algo()) |
-}
-
-function print_read:char[1] () {
-	local var1:string := read() |
-	print(var1) |
-	return var1 |
-	break |
-}
-
-function prueba_if: boolean () {
-	if(true){} elif(true){} elif(true){} else{}
-	if(true){} elif(true){} elif(true){}
-	if(true){} else{}
-	if(true){
-		if(false){
-			local var1:string := read() |
-		} else {
-
-		}
-	}
-	local var:boolean := true |
-}
+//function prueba2:string (var0: boolean) {
+//	local var1: string, var2: float |
+//	local var3: int, var4: char |
+//	var1 := var0 |
+//	var2 := 10 |
+//	var3 := prueba3() |
+//	var4 := prueba1(1) |
+//	var4 := prueba1(1, prueba1(), "prueba") |
+//}
+//
+//function prueba3:char () local var: char |
+//
+//function ciclos:char () {
+//	for(var:int := 0, algo(), otroalgo()){}
+//	do {
+// 		var2 := 10 |
+// 		var2 := 10 |
+// 		algo(1, 2) |
+// 	} until(algo()) |
+//}
+//
+//function print_read:char[1] () {
+//	local var1:string := read() |
+//	print(var1) |
+//	return var1 |
+//	break |
+//}
+//
+//function prueba_if: boolean () {
+//	if(true){} elif(true){} elif(true){} else{}
+//	if(true){} elif(true){} elif(true){}
+//	if(true){} else{}
+//	if(true){
+//		if(false){
+//			local var1:string := read() |
+//		} else {}
+//	}
+//	local var:boolean := true |
+//}

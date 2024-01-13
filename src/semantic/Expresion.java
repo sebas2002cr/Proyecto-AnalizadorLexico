@@ -58,4 +58,9 @@ class LlamadaFuncion extends Expresion {
 		this.nombre = nombre;
 		this.argumentos = argumentos;
 	}
+
+	@Override
+	public String toString() {
+		return nombre;
+	}
 }

@@ -2,11 +2,12 @@ package semantic;
 
 import java.util.ArrayList;
 
-public class Condicional extends LineaCodigo{
+public class Condicional extends LineaCodigo {
 	Condicional sino;
 
 	public void siNoAcierta(Condicional sino) {
-		this.sino = sino;
+		if (this.sino == null) this.sino = sino;
+		else this.sino.siNoAcierta(sino);
 	}
 
 	public static If ifLine(ArrayList<Expresion> expresiones, BloqueCodigo bloqueCodigo){
@@ -30,6 +31,11 @@ class If extends Condicional {
 		this.condicion = condicion;
 		this.bloqueCodigo = bloqueCodigo;
 	}
+
+	@Override
+	public String toString() {
+		return "if"+condicion+(sino != null ? sino.toString() : "");
+	}
 }
 
 class Elif extends Condicional {
@@ -40,6 +46,11 @@ class Elif extends Condicional {
 		this.condicion = condicion;
 		this.bloqueCodigo = bloqueCodigo;
 	}
+
+	@Override
+	public String toString() {
+		return "elif"+condicion+(sino != null ? sino.toString() : "");
+	}
 }
 
 class Else extends Condicional {
@@ -47,5 +58,10 @@ class Else extends Condicional {
 
 	Else(BloqueCodigo bloqueCodigo) {
 		this.bloqueCodigo = bloqueCodigo;
+	}
+
+	@Override
+	public String toString() {
+		return "else"+(sino != null ? sino.toString() : "");
 	}
 }

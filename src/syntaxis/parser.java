@@ -1298,7 +1298,7 @@ class CUP$parser$actions {
           case 85: // condicional ::= condicional_if condicionales_elif 
             {
               Object RESULT =null;
-
+		 arbol.condicional(); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("condicional",26, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

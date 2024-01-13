@@ -196,7 +196,7 @@ tokens ::=  PERSONA | L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL ;
 // ------------------------------ CONDICIONALES --------------------------------------------------------------------------------
 
 // Añadir que se puedan declarar condicionales con solo una línea de código, no funciona con la línea de código por el for y por las condicionales, que son las producciones que no terminan con FIN_REGALO
-condicional ::= condicional_if condicionales_elif;
+condicional ::= condicional_if condicionales_elif {: arbol.condicional(); :};
 condicionales_elif ::= condicional_elif condicionales_elif | condicional_else | epsilon;
 condicional_if ::=
 	{: arbol.nuevasExpresiones(); :} ELFO ABRECUENTO regalo CIERRECUENTO {: arbol.nuevasExpresiones(); :}

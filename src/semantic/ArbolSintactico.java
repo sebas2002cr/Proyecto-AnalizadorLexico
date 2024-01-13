@@ -9,7 +9,7 @@ public class ArbolSintactico {
 	private ArrayList<ArrayList<Variable>> matrizVariables = new ArrayList<ArrayList<Variable>>();
 	private ArrayList<BloqueCodigo> bloquesCodigo = new ArrayList<BloqueCodigo>();
 	private ArrayList<ArrayList<Expresion>> matrizExpresiones = new ArrayList<ArrayList<Expresion>>();
-	private Condicional ultimaCondicional;
+	private ArrayList<Condicional> condicionales = new ArrayList<Condicional>();
 
 	// Añade una función
 	public void agregar(Funcion funcion) {
@@ -43,13 +43,12 @@ public class ArbolSintactico {
 	}
 
 	public void agregar(Condicional condicional) {
-		ultimaCondicional.siNoAcierta(condicional);
-		ultimaCondicional = condicional;
+		condicionales.get(condicionales.size() - 1).siNoAcierta(condicional);
 	}
 
 	public void agregar(If objetoIf) {
 		bloquesCodigo.get(bloquesCodigo.size() - 1).agregar(objetoIf);
-		ultimaCondicional = objetoIf;
+		condicionales.add(objetoIf);
 	}
 
 	public void nuevasVariables() {
@@ -82,6 +81,11 @@ public class ArbolSintactico {
 	public BloqueCodigo bloqueCodigo() {
 		BloqueCodigo bloque = bloquesCodigo.remove(bloquesCodigo.size() - 1);
 		return bloque;
+	}
+
+	// Elimina la última condicional de la pila
+	public void condicional() {
+		condicionales.remove(condicionales.size() - 1);
 	}
 
 	public ArrayList<Expresion> expresiones(boolean pop) {
