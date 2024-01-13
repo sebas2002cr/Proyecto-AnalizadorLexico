@@ -1,0 +1,27 @@
+ function funcion1:int(param1:char, param2:float) {
+	local var1:int[10] := "hola" |
+	"prueba" |
+	"prueba" |
+	if(true) {
+		if(true) {
+			if(true) {
+
+			}
+		}
+	}
+	for(cont:int := 0, true, cont) {
+		for(cont:int := 0, true, cont) {
+			for(cont:int := 0, true, cont) {
+				local str:string := "prueba" |
+			}
+		}
+	}
+}
+
+function main() {
+
+}
+
+function funcion2:string() {
+
+}

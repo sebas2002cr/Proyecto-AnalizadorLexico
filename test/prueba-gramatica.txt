@@ -1,5 +1,7 @@
  function prueba1:int[10] (var: int[10], var2: string) |
 
+ function lambda:char() return "h" |
+
 function main() {
 
 }

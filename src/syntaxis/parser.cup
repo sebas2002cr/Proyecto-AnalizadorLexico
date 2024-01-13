@@ -2,9 +2,10 @@ package syntaxis;
 
 import java_cup.runtime.*;
 import lexical.CodeLexer;
+import semantic.*;
 
 action code {:
-	ListaTablasSimbolos tablas = new ListaTablasSimbolos();
+	ArbolSintactico arbol = new ArbolSintactico();
 :}
 
 parser code {:
@@ -86,8 +87,6 @@ terminal FUNCTION,        // Palabra clave FUNCTION
 terminal ERROR_IDENTIFICADOR,  // Terminal para errores en identificadores
         ERROR_LITERAL;        // Terminal para errores en literales
 
-
-
 // no terminales
 non terminal navidad, bolsa_navidenna, funcion, funcion_main, inicio;
 non terminal parametros, parametro, tipo, array, mas_parametros;
@@ -98,28 +97,30 @@ non terminal tokens, expresiones_AL, _expresiones_AL, _operadores_aritmeticos ;
 non terminal expresiones, mas_expresiones;
 non terminal condicional, condicional_if, condicionales_elif, condicional_elif, condicional_else;
 non terminal ciclo_for, ciclo_do_until;
-non terminal prueba;
 non terminal Symbol epsilon;
-
 
 // ------------------------------ Start --------------------------------------------------------------------------------
 
 start with navidad;
 
-navidad ::= inicio {: tablas.guardar("test/resultado-sintactico.txt"); :};
+navidad ::= inicio {: AnalisisSemantico semantica = new AnalisisSemantico(arbol); :};
 
 inicio ::= funcion inicio | funcion_main bolsa_navidenna;
 
 bolsa_navidenna ::= funcion bolsa_navidenna | epsilon;
 funcion ::=
-	FUNCTION PERSONA:nf DOS_PUNTOS tipo:tf {: tablas.tabla(new Funcion(nf, tf)); :}
-	ABRECUENTO parametros CIERRECUENTO {: tablas.parametro("parametro"); :}
-	bloque_codigo;
-funcion_main ::= FUNCTION MAIN ABRECUENTO CIERRECUENTO {: tablas.tabla(new Funcion()); :} bloque_codigo;
+	FUNCTION PERSONA:nf DOS_PUNTOS tipo:tf
+	ABRECUENTO parametros CIERRECUENTO {: arbol.nuevasVariables(); :}
+	bloque_codigo
+	{: arbol.agregar(new Funcion(nf, tf, arbol.variables(true), arbol.bloqueCodigo())); :};
+
+funcion_main ::=
+	FUNCTION MAIN ABRECUENTO CIERRECUENTO
+	bloque_codigo {: arbol.agregar(new Funcion(arbol.bloqueCodigo())); :};
 
 parametros ::= parametro | parametro COMA mas_parametros | epsilon;
 mas_parametros ::= parametro | parametro COMA mas_parametros;
-parametro ::= PERSONA:np DOS_PUNTOS tipo:tp {: tablas.simbolo(new Parametro(np, tp)); :};
+parametro ::= PERSONA:np DOS_PUNTOS tipo:tp {: arbol.agregar(new Variable(np, tp)); :};
 
 tipo ::=
 	PAPA_NOEL:t {: RESULT = t; :} |
@@ -132,42 +133,50 @@ array ::=
 	PAPA_NOEL:t ABREEMPAQUE L_PAPA_NOEL:n CIERRAEMPAQUE {: RESULT = t + "[" + n + "]"; :} |
 	NINO_JESUS:t ABREEMPAQUE L_PAPA_NOEL:n CIERRAEMPAQUE {: RESULT = t + "[" + n + "]"; :};
 
-asignar_variable_declarada ::=
-	PERSONA:nv {: tablas.parametro("asignacion"); :}
-	ENTREGA regalo;
-declarar_asignar_variable ::=
-	parametro:p {: tablas.parametro("declaracion_asignacion"); :}
-	ENTREGA regalo;
-asignar_variable ::= asignar_variable_declarada | declarar_asignar_variable;
+asignar_variable_declarada ::= PERSONA:nv {: RESULT = nv; :} ENTREGA regalo;
+declarar_asignar_variable ::= parametro ENTREGA regalo;
+asignar_variable ::=
+	asignar_variable_declarada:nv {: RESULT = "asignar_variable_declarada|"+nv; :} |
+	declarar_asignar_variable {: RESULT = "declarar_asignar_variable|null"; :};
 
 linea_codigo ::=
-	regalo FIN_REGALO | // expresión
-	LOCAL parametros {: tablas.parametro("declaracion"); :} FIN_REGALO | // declaración de una o varias variables
-	asignar_variable_declarada FIN_REGALO | // asignación de variable ya declarada
-	LOCAL declarar_asignar_variable FIN_REGALO | // se declara y asigna variable
+	regalo {: arbol.agregar(LineaCodigo.expresion(arbol.expresiones())); :} FIN_REGALO | // expresión
+	LOCAL parametros {: arbol.agregar(LineaCodigo.declaracionesVariables(arbol.variables())); :} FIN_REGALO | // declaración de una o varias variables
+	asignar_variable_declarada:nv {: arbol.agregar(LineaCodigo.asignacionVariable(nv, arbol.expresiones())); :} FIN_REGALO | // asignación de variable ya declarada
+	LOCAL declarar_asignar_variable {: arbol.agregar(LineaCodigo.declaracionAsignacionVariable(arbol.variables(), arbol.expresiones())); :} FIN_REGALO | // se declara y asigna variable
 	condicional | // condicionales
-	ENVIA:l {: tablas.simbolo(new Lexema(l)); :} regalo FIN_REGALO | // return
-	CORTA:l {: tablas.simbolo(new Lexema(l)); :} FIN_REGALO | // break
+	ENVIA regalo {: arbol.agregar(LineaCodigo.returnLine(arbol.expresiones())); :} FIN_REGALO | // return
+	CORTA {: arbol.agregar(LineaCodigo.breakLine()); :} FIN_REGALO | // break
 	ciclo_for |
 	ciclo_do_until FIN_REGALO |
-	NARRA:l {: tablas.simbolo(new Lexema(l)); :} ABRECUENTO regalo CIERRECUENTO FIN_REGALO; // print
+	NARRA ABRECUENTO regalo CIERRECUENTO FIN_REGALO; // print
 
 codigo_multilinea ::= linea_codigo codigo_multilinea | epsilon;
-codigo_contenido ::= ABREREGALO codigo_multilinea CIERRAREGALO;
-bloque_codigo ::= linea_codigo | FIN_REGALO | codigo_contenido;
+codigo_contenido ::=
+	{: arbol.agregar(LineaCodigo.bloqueCodigo()); :}
+	ABREREGALO codigo_multilinea CIERRAREGALO;
+bloque_codigo ::=
+	{: arbol.agregar(LineaCodigo.bloqueCodigo()); :} linea_codigo |
+	{: arbol.agregar(LineaCodigo.bloqueCodigo()); :} FIN_REGALO |
+	codigo_contenido;
 
 // ------------------------------ EXPRESIONES --------------------------------------------------------------------------------
 
 regalo ::=
     literal |
-    PERSONA |
+    PERSONA:p {: arbol.agregar(Expresion.identificador(p)); :} |
     llamada_funcion |
-    ESCUCHA:l ABRECUENTO CIERRECUENTO {: tablas.simbolo(new Lexema(l)); :};
+    ESCUCHA ABRECUENTO CIERRECUENTO {: arbol.agregar(Expresion.read()); :};
 
-literal ::= L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL | L_SANTA_CLAUS;
+literal ::=
+	L_COLACHO:l {: arbol.agregar(Expresion.literal("float", l)); :} |
+	L_SAN_NICOLAS:l {: arbol.agregar(Expresion.literal("string", l)); :} |
+	L_PAPA_NOEL:l {: arbol.agregar(Expresion.literal("int", l)); :} |
+	L_SANTA_CLAUS:l {: arbol.agregar(Expresion.literal("boolean", l)); :};
+
 llamada_funcion ::=
-	PERSONA:f {: tablas.simbolo(new LexemaNombre("llamada_funcion", f)); :}
-	ABRECUENTO expresiones CIERRECUENTO;
+	PERSONA:f ABRECUENTO {: arbol.nuevasExpresiones(); :} expresiones CIERRECUENTO
+	{: arbol.agregar(Expresion.llamadaFuncion(f, arbol.expresiones())); :};
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;
@@ -179,7 +188,6 @@ expresiones_AL ::= tokens _expresiones_AL
 
 _expresiones_AL ::= _operadores_aritmeticos expresiones_AL | epsilon;
 
-
 // ------------------------------ Símbolos -----------------------------------------------------------------------------
 _operadores_aritmeticos ::= RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO | GRINCH | QUIEN;
 
@@ -190,20 +198,27 @@ tokens ::=  PERSONA | L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL ;
 // Añadir que se puedan declarar condicionales con solo una línea de código, no funciona con la línea de código por el for y por las condicionales, que son las producciones que no terminan con FIN_REGALO
 condicional ::= condicional_if condicionales_elif;
 condicionales_elif ::= condicional_elif condicionales_elif | condicional_else | epsilon;
-condicional_if ::= ELFO:l {: tablas.simbolo(new Lexema(l)); :} ABRECUENTO regalo CIERRECUENTO codigo_contenido;
-condicional_elif ::= HADA:l {: tablas.simbolo(new Lexema(l)); :} ABRECUENTO regalo CIERRECUENTO codigo_contenido;
-condicional_else ::= DUENDE:l {: tablas.simbolo(new Lexema(l)); :} codigo_contenido;
+condicional_if ::=
+	{: arbol.nuevasExpresiones(); :} ELFO ABRECUENTO regalo CIERRECUENTO {: arbol.nuevasExpresiones(); :}
+	codigo_contenido {: arbol.agregar(Condicional.ifLine(arbol.expresiones(true), arbol.bloqueCodigo())); :};
+condicional_elif ::=
+	{: arbol.nuevasExpresiones(); :} HADA ABRECUENTO regalo CIERRECUENTO {: arbol.nuevasExpresiones(); :}
+	codigo_contenido {: arbol.agregar(Condicional.elif(arbol.expresiones(true), arbol.bloqueCodigo())); :};
+condicional_else ::=
+	DUENDE codigo_contenido
+	{: arbol.agregar(Condicional.elseCondition(arbol.bloqueCodigo())); :};
 
 // sustituir el primer regalo por una expresión lógica
 // sustituir el segundo regalo por una acción cómo una operación aritmética o una llamada a función
 ciclo_for ::=
-	ENVUELVE:l {: tablas.simbolo(new Lexema(l)); :}
-	ABRECUENTO asignar_variable COMA regalo COMA regalo CIERRECUENTO bloque_codigo;
+	ENVUELVE ABRECUENTO {: arbol.nuevasVariables(); :} {: arbol.nuevasExpresiones(); :}
+	asignar_variable:av {: arbol.nuevasVariables(); :} COMA regalo COMA regalo
+	{: arbol.nuevasExpresiones(); :} CIERRECUENTO bloque_codigo
+	{: arbol.agregar(LineaCodigo.forLine(av, arbol, arbol.expresiones(true), arbol.bloqueCodigo())); :};
 
 // sustituir el regalo por una expresión lógica
 ciclo_do_until ::=
-	HACE:d {: tablas.simbolo(new Lexema(d)); :}
-	bloque_codigo REVISA:u {: tablas.simbolo(new Lexema(u)); :}
-	ABRECUENTO regalo CIERRECUENTO;
+	HACE bloque_codigo REVISA ABRECUENTO regalo CIERRECUENTO
+	{: arbol.agregar(LineaCodigo.doUntil(arbol.bloqueCodigo(), arbol.expresiones())); :};
 
 epsilon ::= {: RESULT = new Symbol(-1); :};

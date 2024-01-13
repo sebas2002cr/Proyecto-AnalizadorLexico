@@ -1,61 +1,51 @@
-TABLA: prueba1
-funcion, NOMBRE: prueba1, TIPO: int[10]
-parametro, NOMBRE: var, TIPO: int[10]
-parametro, NOMBRE: var2, TIPO: string
+TABLA: func1
+funcion, NOMBRE: func1, TIPO: float
+parametro, NOMBRE: x22, TIPO: char[10]
+parametro, NOMBRE: x22, TIPO: char
+declaracion_asignacion, NOMBRE: x22, TIPO: char
+declaracion_asignacion, NOMBRE: miChar, TIPO: char
+declaracion_asignacion, NOMBRE: miChar2, TIPO: char
+declaracion_asignacion, NOMBRE: str1, TIPO: string
+declaracion, NOMBRE: fl1, TIPO: float
+declaracion_asignacion, NOMBRE: fl1, TIPO: float
+declaracion_asignacion, NOMBRE: in1, TIPO: int
+declaracion, NOMBRE: arr, TIPO: char[10]
+declaracion_asignacion, NOMBRE: mibool, TIPO: boolean
+return
 
 TABLA: main
 funcion, NOMBRE: main, TIPO: null
-
-TABLA: prueba2
-funcion, NOMBRE: prueba2, TIPO: string
-parametro, NOMBRE: var0, TIPO: boolean
-declaracion, NOMBRE: var1, TIPO: string
-declaracion, NOMBRE: var2, TIPO: float
-declaracion, NOMBRE: var3, TIPO: int
-declaracion, NOMBRE: var4, TIPO: char
-llamada_funcion, NOMBRE: prueba3
-llamada_funcion, NOMBRE: prueba1
-llamada_funcion, NOMBRE: prueba1
-llamada_funcion, NOMBRE: prueba1
-
-TABLA: prueba3
-funcion, NOMBRE: prueba3, TIPO: char
-declaracion, NOMBRE: var, TIPO: char
-
-TABLA: ciclos
-funcion, NOMBRE: ciclos, TIPO: char
-for
-declaracion_asignacion, NOMBRE: var, TIPO: int
-llamada_funcion, NOMBRE: algo
-llamada_funcion, NOMBRE: otroalgo
-do
-llamada_funcion, NOMBRE: algo
-until
-llamada_funcion, NOMBRE: algo
-
-TABLA: print_read
-funcion, NOMBRE: print_read, TIPO: char[1]
-declaracion_asignacion, NOMBRE: var1, TIPO: string
+declaracion, NOMBRE: b1, TIPO: boolean
+declaracion, NOMBRE: s1, TIPO: string
 read
 print
+print
+print
+llamada_funcion, NOMBRE: miFunc
+llamada_funcion, NOMBRE: miFunc
 return
-break
 
-TABLA: prueba_if
-funcion, NOMBRE: prueba_if, TIPO: boolean
+TABLA: miFunc
+funcion, NOMBRE: miFunc, TIPO: float
+parametro, NOMBRE: dif, TIPO: int
+parametro, NOMBRE: otra, TIPO: char
+parametro, NOMBRE: otra2, TIPO: char
+for
+do
+return
+until
 if
+print
+break
 elif
-elif
+print
 else
+for
+for
+return
 if
+break
 elif
-elif
-if
-else
-if
-if
-declaracion_asignacion, NOMBRE: var1, TIPO: string
-read
-else
-declaracion_asignacion, NOMBRE: var, TIPO: boolean
+print
+return
 

@@ -16,14 +16,12 @@ public class App {
                     System.out.println("Análisis de Errores léxicos escrito en \"errores.txt\" ");
                 }
             } else {
-                Syntax.parse("/test/prueba-gramatica.txt");
+                Syntax.parse("/test/semantica.txt");
+                System.out.println("\nResultado generado en resultado-sintactico.txt");
             }
-            System.out.println("\nResultado generado en resultado-sintactico.txt");
         } catch (Exception e) {
             // Captura y maneja cualquier excepción que pueda ocurrir durante la ejecución.
-            e.printStackTrace(); // Imprime la traza de la excepción (para fines de
-            // depuración).
-
+            e.printStackTrace(); // Imprime la traza de la excepción (para fines de depuración).
         }
     }
 }
