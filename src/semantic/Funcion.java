@@ -23,6 +23,7 @@ public class Funcion {
 	// constructor de main
 	public Funcion(BloqueCodigo bloqueCodigo) {
 		this.nombre = "main";
+		this.parametros = new ArrayList<Variable>();
 		this.bloqueCodigo = bloqueCodigo;
 	}
 }

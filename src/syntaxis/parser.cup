@@ -176,7 +176,7 @@ literal ::=
 
 llamada_funcion ::=
 	PERSONA:f ABRECUENTO {: arbol.nuevasExpresiones(); :} expresiones CIERRECUENTO
-	{: arbol.agregar(Expresion.llamadaFuncion(f, arbol.expresiones())); :};
+	{: arbol.agregar(Expresion.llamadaFuncion(f, arbol.expresiones(false))); :};
 
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;

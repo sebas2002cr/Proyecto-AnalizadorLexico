@@ -88,8 +88,8 @@ public class ArbolSintactico {
 		condicionales.remove(condicionales.size() - 1);
 	}
 
-	public ArrayList<Expresion> expresiones(boolean pop) {
-		matrizExpresiones.remove(matrizExpresiones.size() - 1);
+	public ArrayList<Expresion> expresiones(boolean eliminarDos) {
+		if(eliminarDos) matrizExpresiones.remove(matrizExpresiones.size() - 1);
 		if(matrizExpresiones.size() > 0){
 			ArrayList<Expresion> removida = matrizExpresiones.remove(matrizExpresiones.size() - 1);
 			return removida;

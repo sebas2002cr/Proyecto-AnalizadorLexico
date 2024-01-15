@@ -1,0 +1,48 @@
+
+function func1:int(param1:string, param1:string) {
+
+}
+
+@@ Función repetida
+@@ Parámetros repetidos
+function func1:int() {
+	var1 | @@ variable no existente
+	func2() | @@ función no existente
+	func1("string") | @@ Cantidad de parámetros incorrectos
+	func3("string", 1) | @@ Tipo de parámetro incorrecto
+	func3("string", func3("a", "b")) |
+	func3(func4(), "string") |
+	local var1:char, var1:char | @@ Ya existe var1
+	var2 := "prueba" | @@ Asignación a variable que no existe
+	var1 := "prueba" | @@ Asignación de tipo incorrecto
+	local var1:string := 1 | @@ variable existente y tipo incorrecto
+	local var2:string := func3("string", func3("a", "b")) | @@ Línea correcta
+	return "return" |
+}
+
+/_ com
+_/
+
+
+function main() {
+
+}
+
+function func3:string(param1:string, param2:string) {
+	for(var1 := 0, var1, var1) | @@ Finalización no booleana
+	for(var1:int := 0, funcbool(), var1) |
+	do {
+
+	} until(func3()) |
+	if (var1) {
+
+	} elif (var1) {
+
+	} else {
+		var2 |
+	}
+}
+
+function funcbool:boolean() {
+
+}

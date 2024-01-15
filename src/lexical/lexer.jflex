@@ -39,13 +39,11 @@ InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 /* comments */
-Comment = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
+Comment = {MultilineComment} | {OneLineComment}
 
-TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-// Comment can be the last line of the file, without line terminator.
-EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
-DocumentationComment = "/**" {CommentContent} "*"+ "/"
-CommentContent       = ( [^*] | \*+ [^/*] )*
+MultilineComment   = "/_" [^*] ~"_/" | "/_" "_"+ "/"
+CommentContent     = ( [^*] | \*+ [^/*] )*
+OneLineComment     = "@@".*
 
 DecIntegerLiteral = 0 | [1-9][0-9]*
 

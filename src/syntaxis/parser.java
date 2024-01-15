@@ -1091,7 +1091,7 @@ class CUP$parser$actions {
 		int fleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
 		int fright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
 		Object f = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
-		 arbol.agregar(Expresion.llamadaFuncion(f, arbol.expresiones())); 
+		 arbol.agregar(Expresion.llamadaFuncion(f, arbol.expresiones(false))); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("llamada_funcion",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
