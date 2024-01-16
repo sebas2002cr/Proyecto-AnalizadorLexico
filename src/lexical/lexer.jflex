@@ -113,9 +113,9 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 
 	// Literales
 	((\"[^\"] ~\")|(\"\")) {return symbol(sym.L_SAN_NICOLAS);}
-	//\"({LETER}|{DIGIT}|{ESPACIO}|{SYMBOL})*+\" | ("#"{DIGIT}{DIGIT}) {lexeme=yytext(); line=yyline; return LITERAL_STRING;}
 	("#"{DIGIT}+) {return symbol(sym.L_SAN_NICOLAS);}
-	("(-"{DIGIT}+")")|{DIGIT}+ {return symbol(sym.L_PAPA_NOEL);} // Un numero entero
+	("-"?)("(-"{DIGIT}+")")|("-"?){DIGIT}+ {return symbol(sym.L_PAPA_NOEL);} // Un numero entero
+	"'".?"'" {return symbol(sym.L_NINO_JESUS);}
 
 	//PARENTESIS
 	"(" {return symbol(sym.ABRECUENTO);}
@@ -133,15 +133,9 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 	":" {return symbol(sym.DOS_PUNTOS);}
 	"|" {return symbol(sym.FIN_REGALO);}
 
-	/* comments */
 	{Comment}                      { /* ignore */ }
-
-	/* whitespace */
 	{WhiteSpace}                   { /* ignore */ }
 }
-
-
-
 
 // |-------------------- RECONOCER ERRORES --------------------| //
 // Identificadores
@@ -175,8 +169,6 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 // Comentarios
 @[^@]* {return new Symbol(sym.error, yyline, yycolumn, yytext());}
 // /_[^]*_/{ return new Symbol(sym.error, yyline, yycolumn, yytext()); }
-
-
 
 /* error fallback */
 [^] {return symbol(sym.error);}

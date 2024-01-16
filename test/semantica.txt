@@ -32,6 +32,33 @@ function main() {
 
 }
 
-function funcion2:string() {
+function aritmetica:int() {
+	1 + 1 |
+	(1 + 2) * (3 - 4) |
+	(3 + (1 + 2)) ~ 3 |
+	4 ** 4 |
+	++ 5 |
+	-3 |
+	1 + 1 + 1 |
+	- 1 |
+}
 
+function logica:boolean() {
+	1 < 1 |
+	! true |
+	true # true |
+	1 >= true |
+	(1 >= var1) # true |
+	1 >= var1 # true |
+	true ^ var1 |
+	true ^ logica() |
+	true ^ 1 >= var1 |
+	true ^ (1 >= var1) |
+	true # true # true # false |
+	(fl1 ^ false) # !(func2(3,in1) > 56) |
+	6.7 <> 8.9 |
+	j<30*2 |
+	var2>12.2 # (34+33)>12 |
+	--fl1 ~ -14 / (++in1) + 7- 15 ** arr * func1(hola, true, "hola mundo", 4.5, 'a') |
+	14 / (++num) |
 }

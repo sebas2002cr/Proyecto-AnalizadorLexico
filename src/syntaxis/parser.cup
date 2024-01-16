@@ -50,10 +50,11 @@ terminal PERSONA,       // Identificador
 		SANTA;          // Tipo ARRAY
 
 // literales
-terminal L_COLACHO,      // Literal FLOAT
-		 L_SAN_NICOLAS,  // Literal STRING
-		 L_PAPA_NOEL,    // Literal INT
-         L_SANTA_CLAUS; // Literal BOOLEAN
+terminal L_COLACHO,    // Literal FLOAT
+		L_SAN_NICOLAS, // Literal STRING
+		L_PAPA_NOEL,   // Literal INT
+        L_SANTA_CLAUS, // Literal BOOLEAN
+		L_NINO_JESUS;  // Literal CHAR
 
 // símbolos
 terminal ABRECUENTO,     // Símbolo "("
@@ -77,9 +78,11 @@ terminal ELFO,            // Palabra clave IF
         REVISA,           // Palabra clave UNTIL
         ENVIA,            // Palabra clave RETURN
         CORTA;            // Palabra clave BREAK
+
 terminal ENTREGA,         // Operador de asignación ":="
         COMA,             // Símbolo ","
         DOS_PUNTOS;       // Símbolo ":"
+
 terminal FUNCTION,        // Palabra clave FUNCTION
         MAIN,            // Palabra clave MAIN
         LOCAL;           // Palabra clave LOCAL
@@ -92,9 +95,13 @@ non terminal navidad, bolsa_navidenna, funcion, funcion_main, inicio;
 non terminal parametros, parametro, tipo, array, mas_parametros;
 non terminal asignar_variable, asignar_variable_declarada, declarar_asignar_variable;
 non terminal bloque_codigo, linea_codigo, codigo_multilinea, codigo_contenido;
-non terminal regalo, literal, llamada_funcion;
-non terminal tokens, expresiones_AL, _expresiones_AL, _operadores_aritmeticos ;
+non terminal regalo, literal, llamada_funcion, valor;
 non terminal expresiones, mas_expresiones;
+non terminal expresion_aritmetica, operador_aritmetico_unario;
+non terminal termino_aritmetico, factor_aritmetico;
+non terminal expresion_logica, operadores_logicos, operador_logico_unario, opciones_expresion_relacional;
+non terminal expresion_relacional, operador_relacional;
+non terminal termino_logico, factor_logico;
 non terminal condicional, condicional_if, condicionales_elif, condicional_elif, condicional_else;
 non terminal ciclo_for, ciclo_do_until;
 non terminal Symbol epsilon;
@@ -163,16 +170,21 @@ bloque_codigo ::=
 // ------------------------------ EXPRESIONES --------------------------------------------------------------------------------
 
 regalo ::=
-    literal |
+	expresion_aritmetica |
+	expresion_logica;
+
+valor ::=
+	literal |
     PERSONA:p {: arbol.agregar(Expresion.identificador(p)); :} |
     llamada_funcion |
-    ESCUCHA ABRECUENTO CIERRECUENTO {: arbol.agregar(Expresion.read()); :};
+	ESCUCHA ABRECUENTO CIERRECUENTO {: arbol.agregar(Expresion.read()); :};
 
 literal ::=
 	L_COLACHO:l {: arbol.agregar(Expresion.literal("float", l)); :} |
 	L_SAN_NICOLAS:l {: arbol.agregar(Expresion.literal("string", l)); :} |
 	L_PAPA_NOEL:l {: arbol.agregar(Expresion.literal("int", l)); :} |
-	L_SANTA_CLAUS:l {: arbol.agregar(Expresion.literal("boolean", l)); :};
+	L_SANTA_CLAUS:l {: arbol.agregar(Expresion.literal("boolean", l)); :} |
+	L_NINO_JESUS:l {: arbol.agregar(Expresion.literal("char", l)); :};
 
 llamada_funcion ::=
 	PERSONA:f ABRECUENTO {: arbol.nuevasExpresiones(); :} expresiones CIERRECUENTO
@@ -181,21 +193,50 @@ llamada_funcion ::=
 expresiones ::= regalo | regalo COMA mas_expresiones | epsilon;
 mas_expresiones ::= regalo | regalo COMA mas_expresiones;
 
-// ------------------------------ EXPRESIONES NUEVA --------------------------------------------------------------------------------
-expresiones_AL ::= tokens _expresiones_AL
-                    | llamada_funcion _expresiones_AL
-                    | ABRECUENTO expresiones_AL CIERRECUENTO _expresiones_AL;
+// ------------------------------ EXPRESIONES aritmético-lógicas --------------------------------------------------------------------------------
 
-_expresiones_AL ::= _operadores_aritmeticos expresiones_AL | epsilon;
+expresion_aritmetica ::=
+	termino_aritmetico |
+	expresion_aritmetica RUDOLPH termino_aritmetico |
+	expresion_aritmetica DASHER termino_aritmetico |
+	operador_aritmetico_unario termino_aritmetico;
+termino_aritmetico ::=
+	factor_aritmetico |
+	termino_aritmetico COMET factor_aritmetico |
+	termino_aritmetico VIXEN factor_aritmetico |
+	termino_aritmetico TOTIN factor_aritmetico |
+	termino_aritmetico RENILLO factor_aritmetico;
+factor_aritmetico ::= valor | ABRECUENTO expresion_aritmetica CIERRECUENTO;
 
-// ------------------------------ Símbolos -----------------------------------------------------------------------------
-_operadores_aritmeticos ::= RUDOLPH | DASHER | COMET | VIXEN | TOTIN | RENILLO | GRINCH | QUIEN;
+operador_aritmetico_unario ::= GRINCH | QUIEN | DASHER;
 
-tokens ::=  PERSONA | L_COLACHO | L_SAN_NICOLAS | L_PAPA_NOEL ;
+expresion_logica ::=
+	expresion_logica GASPAR opciones_expresion_relacional |
+	expresion_logica GASPAR expresion_aritmetica |
+	expresion_aritmetica GASPAR expresion_aritmetica |
+	expresion_aritmetica GASPAR opciones_expresion_relacional |
+	expresion_logica MELCHOR expresion_aritmetica |
+	expresion_logica MELCHOR opciones_expresion_relacional |
+	expresion_aritmetica MELCHOR expresion_aritmetica |
+	expresion_aritmetica MELCHOR opciones_expresion_relacional |
+	BALTASAR ABRECUENTO expresion_logica CIERRECUENTO |
+	ABRECUENTO expresion_logica CIERRECUENTO |
+	expresion_relacional |
+	BALTASAR expresion_relacional;
+
+opciones_expresion_relacional ::=
+	expresion_relacional |
+	ABRECUENTO expresion_relacional CIERRECUENTO |
+	BALTASAR opciones_expresion_relacional;
+
+expresion_relacional ::=
+	expresion_aritmetica operador_relacional expresion_aritmetica |
+	BALTASAR expresion_aritmetica;
+
+operador_relacional ::= KNECHT_RUPRECHT | KRAMPUS | BELSNICKEL | ZWARTE_PIET | SNOWBALL_ALABASTRO | PEPPER_MINSTIX;
 
 // ------------------------------ CONDICIONALES --------------------------------------------------------------------------------
 
-// Añadir que se puedan declarar condicionales con solo una línea de código, no funciona con la línea de código por el for y por las condicionales, que son las producciones que no terminan con FIN_REGALO
 condicional ::= condicional_if condicionales_elif {: arbol.condicional(); :};
 condicionales_elif ::= condicional_elif condicionales_elif | condicional_else | epsilon;
 condicional_if ::=
@@ -208,15 +249,12 @@ condicional_else ::=
 	DUENDE codigo_contenido
 	{: arbol.agregar(Condicional.elseCondition(arbol.bloqueCodigo())); :};
 
-// sustituir el primer regalo por una expresión lógica
-// sustituir el segundo regalo por una acción cómo una operación aritmética o una llamada a función
 ciclo_for ::=
 	ENVUELVE ABRECUENTO {: arbol.nuevasVariables(); :} {: arbol.nuevasExpresiones(); :}
 	asignar_variable:av {: arbol.nuevasVariables(); :} COMA regalo COMA regalo
 	{: arbol.nuevasExpresiones(); :} CIERRECUENTO bloque_codigo
 	{: arbol.agregar(LineaCodigo.forLine(av, arbol, arbol.expresiones(true), arbol.bloqueCodigo())); :};
 
-// sustituir el regalo por una expresión lógica
 ciclo_do_until ::=
 	HACE bloque_codigo REVISA ABRECUENTO regalo CIERRECUENTO
 	{: arbol.agregar(LineaCodigo.doUntil(arbol.bloqueCodigo(), arbol.expresiones())); :};
