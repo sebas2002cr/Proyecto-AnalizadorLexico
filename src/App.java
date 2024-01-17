@@ -16,7 +16,7 @@ public class App {
                     System.out.println("Análisis de Errores léxicos escrito en \"errores.txt\" ");
                 }
             } else {
-                Syntax.parse("/test/semantica.txt");
+                Syntax.parse("/test/operacion.txt");
             }
         } catch (Exception e) {
             // Captura y maneja cualquier excepción que pueda ocurrir durante la ejecución.

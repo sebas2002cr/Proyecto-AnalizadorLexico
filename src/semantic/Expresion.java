@@ -18,6 +18,10 @@ public class Expresion {
 	public static LlamadaFuncion llamadaFuncion(Object nombre, ArrayList<Expresion> argumentos) {
 		return new LlamadaFuncion(nombre.toString(), argumentos);
 	}
+
+	public static Separador separador(){
+		return new Separador();
+	}
 }
 
 class Literal extends Expresion {
@@ -62,5 +66,12 @@ class LlamadaFuncion extends Expresion {
 	@Override
 	public String toString() {
 		return nombre;
+	}
+}
+
+class Separador extends Expresion {
+	@Override
+	public String toString() {
+		return "SEPARADOR";
 	}
 }

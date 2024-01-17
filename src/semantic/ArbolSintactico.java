@@ -35,6 +35,7 @@ public class ArbolSintactico {
 			matrizExpresiones.add(new ArrayList<Expresion>());
 		}
 		matrizExpresiones.get(matrizExpresiones.size() - 1).add(expresion);
+		// System.out.println(matrizExpresiones);
 	}
 
 	// Añade una línea de código al último bloque de código de la pila
@@ -92,7 +93,7 @@ public class ArbolSintactico {
 		if(eliminarDos) matrizExpresiones.remove(matrizExpresiones.size() - 1);
 		if(matrizExpresiones.size() > 0){
 			ArrayList<Expresion> removida = matrizExpresiones.remove(matrizExpresiones.size() - 1);
-			return removida;
+			return this.agruparExpresiones(removida);
 		}
 		return new ArrayList<Expresion>();
 	}
@@ -102,7 +103,29 @@ public class ArbolSintactico {
 		ArrayList<Expresion> oldExpresiones = new ArrayList<Expresion>();
 		for(Expresion expresion : this.matrizExpresiones.get(ultimoIndice)) oldExpresiones.add(expresion);
 		this.matrizExpresiones.get(ultimoIndice).clear();
-		return oldExpresiones;
+		return this.agruparExpresiones(oldExpresiones);
+	}
+
+	private ArrayList<Expresion> agruparExpresiones(ArrayList<Expresion> expresiones) {
+		ArrayList<Expresion> nuevasExpresiones = new ArrayList<Expresion>();
+		ArrayList<Expresion> grupoExpresiones = new ArrayList<Expresion>();
+		int indice = 0;
+		while(indice < expresiones.size()) {
+			Expresion expresion = expresiones.get(indice);
+			if(expresion.getClass() != Separador.class){
+				grupoExpresiones.add(expresion);
+			} else {
+				if(grupoExpresiones.size() == 1) {
+					nuevasExpresiones.add(grupoExpresiones.get(0));
+				}
+				if(grupoExpresiones.size() > 1) {
+					nuevasExpresiones.add(new Operacion(grupoExpresiones));
+				}
+				grupoExpresiones.clear();
+			}
+			indice++;
+		}
+		return nuevasExpresiones;
 	}
 }
 

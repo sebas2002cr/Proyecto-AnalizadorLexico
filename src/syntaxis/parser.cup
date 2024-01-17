@@ -19,8 +19,8 @@ parser code {:
 :}
 
 init with {: :};
-
 scan with {: return lex.next_token(); :};
+
 // operadores
 terminal RUDOLPH,      // Operador de suma
         DASHER,       // Operador de resta
@@ -46,8 +46,7 @@ terminal PERSONA,       // Identificador
         SANTA_CLAUS,    // Tipo BOOLEAN
         SAN_NICOLAS,    // Tipo STRING
         NINO_JESUS,     // Tipo CHAR
-		COLACHO,        // Tipo FLOAT
-		SANTA;          // Tipo ARRAY
+		COLACHO;        // Tipo FLOAT
 
 // literales
 terminal L_COLACHO,    // Literal FLOAT
@@ -99,9 +98,9 @@ non terminal regalo, literal, llamada_funcion, valor;
 non terminal expresiones, mas_expresiones;
 non terminal expresion_aritmetica, operador_aritmetico_unario;
 non terminal termino_aritmetico, factor_aritmetico;
-non terminal expresion_logica, operadores_logicos, operador_logico_unario, opciones_expresion_relacional;
+non terminal expresion_logica, opciones_expresion_relacional;
 non terminal expresion_relacional, operador_relacional;
-non terminal termino_logico, factor_logico;
+non terminal not, and_or, parentesis_abierto, parentesis_cerrado;
 non terminal condicional, condicional_if, condicionales_elif, condicional_elif, condicional_else;
 non terminal ciclo_for, ciclo_do_until;
 non terminal Symbol epsilon;
@@ -147,7 +146,7 @@ asignar_variable ::=
 	declarar_asignar_variable {: RESULT = "declarar_asignar_variable|null"; :};
 
 linea_codigo ::=
-	regalo {: arbol.agregar(LineaCodigo.expresion(arbol.expresiones())); :} FIN_REGALO | // expresión
+	regalo  {: arbol.agregar(LineaCodigo.expresion(arbol.expresiones())); :} FIN_REGALO | // expresión
 	LOCAL parametros {: arbol.agregar(LineaCodigo.declaracionesVariables(arbol.variables())); :} FIN_REGALO | // declaración de una o varias variables
 	asignar_variable_declarada:nv {: arbol.agregar(LineaCodigo.asignacionVariable(nv, arbol.expresiones())); :} FIN_REGALO | // asignación de variable ya declarada
 	LOCAL declarar_asignar_variable {: arbol.agregar(LineaCodigo.declaracionAsignacionVariable(arbol.variables(), arbol.expresiones())); :} FIN_REGALO | // se declara y asigna variable
@@ -170,8 +169,8 @@ bloque_codigo ::=
 // ------------------------------ EXPRESIONES --------------------------------------------------------------------------------
 
 regalo ::=
-	expresion_aritmetica |
-	expresion_logica;
+	expresion_aritmetica {: arbol.agregar(Expresion.separador()); :} |
+	expresion_logica {: arbol.agregar(Expresion.separador()); :};
 
 valor ::=
 	literal |
@@ -197,43 +196,51 @@ mas_expresiones ::= regalo | regalo COMA mas_expresiones;
 
 expresion_aritmetica ::=
 	termino_aritmetico |
-	expresion_aritmetica RUDOLPH termino_aritmetico |
-	expresion_aritmetica DASHER termino_aritmetico |
+	expresion_aritmetica RUDOLPH {: arbol.agregar(Operacion.operando("SUMA")); :} termino_aritmetico |
+	expresion_aritmetica DASHER {: arbol.agregar(Operacion.operando("RESTA")); :} termino_aritmetico |
 	operador_aritmetico_unario termino_aritmetico;
 termino_aritmetico ::=
 	factor_aritmetico |
-	termino_aritmetico COMET factor_aritmetico |
-	termino_aritmetico VIXEN factor_aritmetico |
-	termino_aritmetico TOTIN factor_aritmetico |
-	termino_aritmetico RENILLO factor_aritmetico;
-factor_aritmetico ::= valor | ABRECUENTO expresion_aritmetica CIERRECUENTO;
+	termino_aritmetico COMET {: arbol.agregar(Operacion.operando("MULTIPLICACION")); :} factor_aritmetico |
+	termino_aritmetico VIXEN {: arbol.agregar(Operacion.operando("DIVISION")); :} factor_aritmetico |
+	termino_aritmetico TOTIN {: arbol.agregar(Operacion.operando("MODULO")); :} factor_aritmetico |
+	termino_aritmetico RENILLO {: arbol.agregar(Operacion.operando("POTENCIA")); :} factor_aritmetico;
+factor_aritmetico ::= valor | parentesis_abierto expresion_aritmetica parentesis_cerrado;
 
-operador_aritmetico_unario ::= GRINCH | QUIEN | DASHER;
+operador_aritmetico_unario ::=
+	GRINCH {: arbol.agregar(Operacion.operando("INCREMENTO")); :} |
+	QUIEN {: arbol.agregar(Operacion.operando("DECREMENTO")); :}|
+	DASHER {: arbol.agregar(Operacion.operando("NEGATIVO")); :};
 
 expresion_logica ::=
-	expresion_logica GASPAR opciones_expresion_relacional |
-	expresion_logica GASPAR expresion_aritmetica |
-	expresion_aritmetica GASPAR expresion_aritmetica |
-	expresion_aritmetica GASPAR opciones_expresion_relacional |
-	expresion_logica MELCHOR expresion_aritmetica |
-	expresion_logica MELCHOR opciones_expresion_relacional |
-	expresion_aritmetica MELCHOR expresion_aritmetica |
-	expresion_aritmetica MELCHOR opciones_expresion_relacional |
-	BALTASAR ABRECUENTO expresion_logica CIERRECUENTO |
-	ABRECUENTO expresion_logica CIERRECUENTO |
-	expresion_relacional |
-	BALTASAR expresion_relacional;
+	expresion_logica and_or opciones_expresion_relacional |
+	expresion_logica and_or expresion_aritmetica |
+	expresion_logica and_or not opciones_expresion_relacional |
+	expresion_aritmetica and_or expresion_aritmetica |
+	not parentesis_abierto expresion_aritmetica parentesis_cerrado |
+	not opciones_expresion_relacional |
+	opciones_expresion_relacional and_or expresion_aritmetica |
+	opciones_expresion_relacional and_or opciones_expresion_relacional |
+	expresion_aritmetica and_or opciones_expresion_relacional |
+	expresion_relacional;
 
-opciones_expresion_relacional ::=
-	expresion_relacional |
-	ABRECUENTO expresion_relacional CIERRECUENTO |
-	BALTASAR opciones_expresion_relacional;
+opciones_expresion_relacional ::= parentesis_abierto expresion_relacional parentesis_cerrado;
+expresion_relacional ::= expresion_aritmetica operador_relacional expresion_aritmetica;
 
-expresion_relacional ::=
-	expresion_aritmetica operador_relacional expresion_aritmetica |
-	BALTASAR expresion_aritmetica;
+not ::= BALTASAR {: arbol.agregar(Operacion.operando("NOT")); :};
+parentesis_abierto ::= ABRECUENTO {: arbol.agregar(Operacion.operando("PARENTESIS_ABIERTO")); :};
+parentesis_cerrado ::= CIERRECUENTO {: arbol.agregar(Operacion.operando("PARENTESIS_CERRADO")); :};
+and_or ::=
+	GASPAR {: arbol.agregar(Operacion.operando("AND")); :} |
+	MELCHOR {: arbol.agregar(Operacion.operando("OR")); :};
 
-operador_relacional ::= KNECHT_RUPRECHT | KRAMPUS | BELSNICKEL | ZWARTE_PIET | SNOWBALL_ALABASTRO | PEPPER_MINSTIX;
+operador_relacional ::=
+	KNECHT_RUPRECHT {: arbol.agregar(Operacion.operando("MAYOR_IGUAL")); :} |
+	KRAMPUS {: arbol.agregar(Operacion.operando("MAYOR")); :} |
+	BELSNICKEL {: arbol.agregar(Operacion.operando("MENOR_IGUAL")); :} |
+	ZWARTE_PIET {: arbol.agregar(Operacion.operando("MENOR")); :} |
+	SNOWBALL_ALABASTRO {: arbol.agregar(Operacion.operando("DISTINTO")); :} |
+	PEPPER_MINSTIX {: arbol.agregar(Operacion.operando("IGUAL")); :};
 
 // ------------------------------ CONDICIONALES --------------------------------------------------------------------------------
 

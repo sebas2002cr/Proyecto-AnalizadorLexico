@@ -57,7 +57,6 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 <YYINITIAL> "STRING" {return symbol(sym.SAN_NICOLAS);}
 <YYINITIAL> "CHAR" {return symbol(sym.NINO_JESUS);}
 <YYINITIAL> "FLOAT" {return symbol(sym.COLACHO);}
-<YYINITIAL> "ARRAY" {return symbol(sym.SANTA);}
 
 // LEXEMAS DE ESTRUCTURAS DE CONTROL
 <YYINITIAL> "IF" {return symbol(sym.ELFO);}
