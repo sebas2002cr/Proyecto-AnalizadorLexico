@@ -21,8 +21,8 @@ ID: 19, Token: PERSONA, Linea: 4, Columna: 8, Valor: a
 ID: 2, Token: RUDOLPH, Linea: 4, Columna: 10, Valor: +
 ID: 19, Token: PERSONA, Linea: 4, Columna: 12, Valor: b
 ID: 36, Token: FIN_REGALO, Linea: 4, Columna: 14, Valor: |
-ID: 29, Token: L_SANTA_CLAUS, Linea: 5, Columna: 1, Valor: true
+ID: 28, Token: L_SANTA_CLAUS, Linea: 5, Columna: 1, Valor: true
 ID: 36, Token: FIN_REGALO, Linea: 5, Columna: 6, Valor: |
-ID: 29, Token: L_SANTA_CLAUS, Linea: 6, Columna: 1, Valor: false
+ID: 28, Token: L_SANTA_CLAUS, Linea: 6, Columna: 1, Valor: false
 ID: 36, Token: FIN_REGALO, Linea: 6, Columna: 7, Valor: |
 ID: 35, Token: CIERRAREGALO, Linea: 7, Columna: 0, Valor: }

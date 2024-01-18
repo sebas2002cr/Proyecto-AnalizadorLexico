@@ -1,10 +1,10 @@
 package semantic;
 
 import java.util.ArrayList;
+import compilation.Compilable;
+import compilation.Compilador;
 
-// Creamos interfaz de traducción y la implementamos para cada clase y traducir a ensamblador
-
-public class ArbolSintactico {
+public class ArbolSintactico implements Compilable {
 	ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 	private ArrayList<ArrayList<Variable>> matrizVariables = new ArrayList<ArrayList<Variable>>();
 	private ArrayList<BloqueCodigo> bloquesCodigo = new ArrayList<BloqueCodigo>();
@@ -126,6 +126,15 @@ public class ArbolSintactico {
 			indice++;
 		}
 		return nuevasExpresiones;
+	}
+
+	public void compilar(Compilador compilador) {
+		compilador.addLine(".data");
+		compilador.addLine();
+		compilador.addLine(".text");
+		for (Funcion funcion : this.funciones) {
+			funcion.compilar(compilador);
+		}
 	}
 }
 

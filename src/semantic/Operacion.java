@@ -13,7 +13,7 @@ public class Operacion extends Expresion {
 
 	Operacion(ArrayList<Expresion> elementos) {
 		this.priorizarParentesis(elementos);
-		System.out.println(this.print(0));
+		// System.out.println(this.print(0));
 	}
 
 	Operacion(Expresion valor) {

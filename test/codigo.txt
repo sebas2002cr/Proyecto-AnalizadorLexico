@@ -1,63 +1,9 @@
- /* esto es un comentario inicial */
-
-function func1:float(x22:char[10], x22:char){
-	// semantico borrar parametro
-	local x22:char := "!"|
-	local miChar:char :="!"|
-	local miChar2: char :="!!"| // sintactico
-	local str1:string := "Hola $%&/#$&) mundo" |
-	local fl1: float |
-	local fl1:float :=56.6| // semantico fl1
-	local in1:int := false|
-	local arr:char[10] | // sintatico lit
-	// arr[lit] := "c"|
-	local mibool:boolean := true|
-
-	// local int in1<= --fl1 ~ -14/++in1+7- 15 **  arr[67] * func1 (hola, true, "hola mundo", 4.5, "a") | @semantico fl1, in1
-	// mibool <= (3.7 * fl1 + (-45.6~76)) < 56 ^ true # mibool # !mibool  | @semantico literal 76
-
-	return 5.6 | // cambio en retorno genera semantico
-}
 
 function main() {
-	local b1:boolean|
-	local s1:string|
-	a1 := read()| //semantico
-	print(b1)| //semantico
-	print(true)| //semantico
-	print(6.7)|
-	miFunc(miFunc(),"a")| //semantico miFunc, hola
-	//local bl0:bool := 6.7 != 8.9| @ok
-	//local bool bl1 <= in1 => fl1 ^ false # !(func2(3,in1) > 56)| @semantico in1 >= fl1, func2
-	return bl1| //semantico
+	123 |
+	print(1092) |
 }
 
-function miFunc:float(dif:int,otra:char,otra2:char){
-	for(i := 10,i,i) {
-		do{
-			var := var | // semantico
-			return var | //sintactico
-		} until(var2)| // semantico
+function prueba:int() {
 
-		if (var) {
-			print("entra al if")|
-			break |
-		}
-		elif(true) {
-			print(var)|
-		}
-		else {
-			for(j := 10,j,j){
-				for(k := 10,k,k){
-			 		return 1 |
-				}
-			}
-		}
-		if (var){
-			break |
-		} elif(true) {
-			print(var)|
-		}
-	}
-	return 1 | // semantico
 }

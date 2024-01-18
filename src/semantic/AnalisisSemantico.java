@@ -18,10 +18,11 @@ public class AnalisisSemantico {
 			this.validarBloqueCodigo(funcion.bloqueCodigo, funcion);
 			variables.clear();
 		}
+		System.out.println("\n---------- Análisis semántico iniciado ----------\n");
 		for (String error : errores) {
 			System.out.println(error);
 		}
-		System.out.println("\nAnálisis semántico realizado");
+		System.out.println("---------- Análisis semántico realizado ----------");
 	}
 
 	private void funcionesUnicas(ArrayList<Funcion> funciones) {

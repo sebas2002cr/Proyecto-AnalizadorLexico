@@ -1,8 +1,10 @@
 package semantic;
 
 import java.util.ArrayList;
+import compilation.Compilable;
+import compilation.Compilador;
 
-public class Expresion {
+public class Expresion implements Compilable {
 	public static Literal literal(String tipo, Object valor) {
 		return new Literal(Tipo.fromString(tipo), valor.toString());
 	}
@@ -22,6 +24,12 @@ public class Expresion {
 	public static Separador separador(){
 		return new Separador();
 	}
+
+	public void compilar(Compilador compilador) {}
+
+	public Tipo getTipo() {
+		return null;
+	}
 }
 
 class Literal extends Expresion {
@@ -34,8 +42,23 @@ class Literal extends Expresion {
 	}
 
 	@Override
+	public Tipo getTipo() {
+		return this.tipo;
+	}
+
+	@Override
 	public String toString() {
 		return this.valor;
+	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		if(this.tipo.nombre == Tipos.INT) {
+			compilador.addLine("li $t0, " + this.valor);
+			// "subu $sp, $sp, 4\n" +
+			// "li $t0, " + this.valor + "\n" +
+			// "sw $t0, 0($sp)\n";
+		}
 	}
 }
 

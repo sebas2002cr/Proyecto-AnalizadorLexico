@@ -3,6 +3,7 @@ package syntaxis;
 import java_cup.runtime.*;
 import lexical.CodeLexer;
 import semantic.*;
+import compilation.Global;
 
 action code {:
 	ArbolSintactico arbol = new ArbolSintactico();
@@ -109,7 +110,7 @@ non terminal Symbol epsilon;
 
 start with navidad;
 
-navidad ::= inicio {: AnalisisSemantico semantica = new AnalisisSemantico(arbol); :};
+navidad ::= inicio {: Global.global.setArbol(arbol); :};
 
 inicio ::= funcion inicio | funcion_main bolsa_navidenna;
 
@@ -146,7 +147,7 @@ asignar_variable ::=
 	declarar_asignar_variable {: RESULT = "declarar_asignar_variable|null"; :};
 
 linea_codigo ::=
-	regalo  {: arbol.agregar(LineaCodigo.expresion(arbol.expresiones())); :} FIN_REGALO | // expresión
+	regalo {: arbol.agregar(LineaCodigo.expresion(arbol.expresiones())); :} FIN_REGALO | // expresión
 	LOCAL parametros {: arbol.agregar(LineaCodigo.declaracionesVariables(arbol.variables())); :} FIN_REGALO | // declaración de una o varias variables
 	asignar_variable_declarada:nv {: arbol.agregar(LineaCodigo.asignacionVariable(nv, arbol.expresiones())); :} FIN_REGALO | // asignación de variable ya declarada
 	LOCAL declarar_asignar_variable {: arbol.agregar(LineaCodigo.declaracionAsignacionVariable(arbol.variables(), arbol.expresiones())); :} FIN_REGALO | // se declara y asigna variable
@@ -155,7 +156,7 @@ linea_codigo ::=
 	CORTA {: arbol.agregar(LineaCodigo.breakLine()); :} FIN_REGALO | // break
 	ciclo_for |
 	ciclo_do_until FIN_REGALO |
-	NARRA ABRECUENTO regalo CIERRECUENTO FIN_REGALO; // print
+	NARRA ABRECUENTO regalo CIERRECUENTO {: arbol.agregar(LineaCodigo.print(arbol.expresiones())); :} FIN_REGALO; // print
 
 codigo_multilinea ::= linea_codigo codigo_multilinea | epsilon;
 codigo_contenido ::=

@@ -1,8 +1,10 @@
 package semantic;
 
 import java.util.ArrayList;
+import compilation.Compilable;
+import compilation.Compilador;
 
-public class LineaCodigo {
+public class LineaCodigo implements Compilable {
 	public static BloqueCodigo bloqueCodigo() {
 		return new BloqueCodigo();
 	}
@@ -61,13 +63,26 @@ public class LineaCodigo {
 	public static DoUntil doUntil(BloqueCodigo bloqueCodigo, ArrayList<Expresion> expresiones) {
 		return new DoUntil(bloqueCodigo, expresiones.get(0));
 	}
+
+	public static Print print(ArrayList<Expresion> expresiones){
+		return new Print(expresiones.get(0));
+	}
+
+	public void compilar(Compilador compilador){
+	}
 }
 
-class BloqueCodigo {
+class BloqueCodigo implements Compilable{
 	ArrayList<LineaCodigo> lineasCodigo = new ArrayList<LineaCodigo>();
 
 	public void agregar(LineaCodigo lineaCodigo){
 		lineasCodigo.add(lineaCodigo);
+	}
+
+	public void compilar(Compilador compilador) {
+		for (LineaCodigo lineaCodigo : lineasCodigo) {
+			lineaCodigo.compilar(compilador);
+		}
 	}
 }
 
@@ -76,6 +91,16 @@ class LineaExpresion extends LineaCodigo {
 
 	LineaExpresion(Expresion expresion) {
 		this.expresion = expresion;
+	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		compilador.addLine(
+			"# LineaExpresion: " +
+			expresion.getClass().getSimpleName() + " -> " +
+			expresion.toString()
+		);
+		expresion.compilar(compilador);
 	}
 }
 
@@ -146,5 +171,24 @@ class DoUntil extends LineaCodigo {
 	DoUntil(BloqueCodigo bloqueCodigo, Expresion condicion) {
 		this.bloqueCodigo = bloqueCodigo;
 		this.condicion = condicion;
+	}
+}
+
+class Print extends LineaCodigo {
+	Expresion expresion;
+
+	Print(Expresion expresion) {
+		this.expresion = expresion;
+	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		compilador.addLine("# Print");
+		this.expresion.compilar(compilador);
+		if(expresion.getTipo().nombre == Tipos.INT) {
+			compilador.addLine("li $v0, 1");
+			compilador.addLine("move $a0, $t0");
+			compilador.addLine("syscall");
+		}
 	}
 }
