@@ -150,20 +150,10 @@ class DeclaracionAsignacionVariable extends LineaCodigo {
 		// en la pila
 		// Verificar si es una variable de tipo FLOAT
 		if (declaracion.tipo.nombre == Tipos.FLOAT) {
-			compilador.addLine("s.s $f0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)"); // Almacenar
-																											// el valor
-																											// en la
-																											// dirección
-																											// de la
-																											// variable
+			compilador.addLine("s.s $f0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)");
 		} else {
 			compilador.addLine("lw $t0, 0($sp)"); // Cargar el valor desde la pila al registro $t0
-			compilador.addLine("sw $t0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)"); // Almacenar
-																											// el valor
-																											// en la
-																											// dirección
-																											// de la
-																											// variable
+			compilador.addLine("sw $t0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)");
 		}
 
 		// Ajustar el puntero de la pila después de almacenar el valor
