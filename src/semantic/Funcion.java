@@ -39,10 +39,10 @@ public class Funcion implements Compilable {
 		compilador.addLine();
 		if (this.nombre == "main") {
 			compilador.addLine("""
-					# Terminar el programa
-					li $v0, 10
-					syscall
-					""");
+			# Terminar el programa
+			li $v0, 10
+			syscall
+			""");
 		} else {
 			compilador.addLine("# Salir funcion " + this.nombre);
 			// La limpieza de la pila

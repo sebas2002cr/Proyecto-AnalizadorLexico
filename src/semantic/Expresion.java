@@ -92,6 +92,35 @@ class Read extends Expresion {
 	Read(Tipo tipo) {
 		this.tipo = tipo;
 	}
+
+	@Override
+	public String toString() {
+		return "Read";
+	}
+
+	@Override
+	public Tipo getTipo() {
+		return this.tipo;
+	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		compilador.addLine("# Read " + tipo.nombre);
+		if(tipo.nombre == Tipos.INT){
+			compilador.addLine("li $v0, 5");
+			compilador.addLine("syscall");
+			compilador.addLine("move $t0, $v0");
+		} else if(tipo.nombre == Tipos.FLOAT) {
+			compilador.addLine("li $v0, 6");
+			compilador.addLine("syscall");
+		} else if(tipo.nombre == Tipos.STRING) {
+			compilador.addLine("li $v0, 8");
+			compilador.addLine("la $a0, resultado_read");
+			compilador.addLine("la $a1, 100");
+			compilador.addLine("syscall");
+			compilador.addLine("la $t0, resultado_read");
+		}
+	}
 }
 
 class LlamadaFuncion extends Expresion {

@@ -6,8 +6,14 @@ function main() {
 	local var:string := "hola" |
 	local num:int |
 	local fr:boolean := true |
-	print(fr) |
+	@@ print(fr) |
 	print(true) |
 	print('a') |
 	print(3.14) |
+	print("escribe string") |
+	print(read:string()) |
+	print("escribe entero") |
+	print(read:int()) |
+	print("escribe flotante") |
+	print(read:float()) |
 }

@@ -135,10 +135,13 @@ public class ArbolSintactico implements Compilable {
 	public void compilar(Compilador compilador) {
 		compilador.addLine(".data");
 		compilador.addLine("salto_linea: .asciiz \"\\n\"");
+		compilador.addLine("resultado_read: .space 100");
 		for (String literalString : this.literalesString) {
 			String nombreVariable = "string_" + compilador.randomString();
-			compilador.variables.put(literalString, nombreVariable);
-			compilador.addLine(nombreVariable + ": .asciiz " + literalString);
+			if(compilador.variables.get(literalString) == null) {
+				compilador.variables.put(literalString, nombreVariable);
+				compilador.addLine(nombreVariable + ": .asciiz " + literalString);
+			}
 		}
 		compilador.addLine();
 		compilador.addLine(".text");
@@ -151,8 +154,7 @@ public class ArbolSintactico implements Compilable {
 			li, $v0, 4
 			la $a0, salto_linea
 			syscall
-			jr $ra
-		""");
+			jr $ra""");
 	}
 }
 
