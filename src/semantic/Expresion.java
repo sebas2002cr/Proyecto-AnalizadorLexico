@@ -13,8 +13,8 @@ public class Expresion implements Compilable {
 		return new Identificador(token.toString());
 	}
 
-	public static Read read() {
-		return new Read();
+	public static Read read(Object tipo) {
+		return new Read(Tipo.fromString(tipo.toString()));
 	}
 
 	public static LlamadaFuncion llamadaFuncion(Object nombre, ArrayList<Expresion> argumentos) {
@@ -55,9 +55,19 @@ class Literal extends Expresion {
 	public void compilar(Compilador compilador) {
 		if(this.tipo.nombre == Tipos.INT) {
 			compilador.addLine("li $t0, " + this.valor);
-			// "subu $sp, $sp, 4\n" +
-			// "li $t0, " + this.valor + "\n" +
-			// "sw $t0, 0($sp)\n";
+		}
+		if(this.tipo.nombre == Tipos.STRING) {
+			compilador.addLine("la $t0, " + compilador.variables.get(this.valor));
+		}
+		if(this.tipo.nombre == Tipos.BOOLEAN) {
+			compilador.addLine("li $t0, " + (valor.equals("true") ? 1 : 0));
+		}
+		if(this.tipo.nombre == Tipos.CHAR) {
+			compilador.addLine("li $t0, " + (int)this.valor.charAt(1));
+		}
+		if(this.tipo.nombre == Tipos.FLOAT) {
+			compilador.addLine("li.s $f0, " + this.valor);
+
 		}
 	}
 }
@@ -75,7 +85,13 @@ class Identificador extends Expresion {
 	}
 }
 
-class Read extends Expresion {}
+class Read extends Expresion {
+	Tipo tipo;
+
+	Read(Tipo tipo) {
+		this.tipo = tipo;
+	}
+}
 
 class LlamadaFuncion extends Expresion {
 	String nombre;

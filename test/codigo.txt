@@ -2,6 +2,11 @@
 function main() {
 	123 |
 	print(1092) |
+	print("imprimir string") |
+	@@ local var:string := read:int() |
+	print(true) |
+	print('a') |
+	print(3.14) |
 }
 
 function prueba:int() {

@@ -22,7 +22,7 @@ public class AnalisisSemantico {
 		for (String error : errores) {
 			System.out.println(error);
 		}
-		System.out.println("---------- Análisis semántico realizado ----------");
+		System.out.println("\n---------- Análisis semántico realizado ----------");
 	}
 
 	private void funcionesUnicas(ArrayList<Funcion> funciones) {
@@ -166,7 +166,7 @@ public class AnalisisSemantico {
 		}
 
 		if(expresion.getClass() == Read.class) {
-			return new Tipo(Tipos.STRING);
+			return ((Read)expresion).tipo;
 		}
 
 		// validamos si el identificador existe en las variables

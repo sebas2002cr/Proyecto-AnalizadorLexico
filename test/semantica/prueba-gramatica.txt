@@ -28,7 +28,7 @@ function main() {
 //}
 //
 //function print_read:char[1] () {
-//	local var1:string := read() |
+//	local var1:string := read:string() |
 //	print(var1) |
 //	return var1 |
 //	break |

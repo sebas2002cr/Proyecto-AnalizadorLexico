@@ -177,7 +177,7 @@ valor ::=
 	literal |
     PERSONA:p {: arbol.agregar(Expresion.identificador(p)); :} |
     llamada_funcion |
-	ESCUCHA ABRECUENTO CIERRECUENTO {: arbol.agregar(Expresion.read()); :};
+	ESCUCHA DOS_PUNTOS tipo:t ABRECUENTO CIERRECUENTO {: arbol.agregar(Expresion.read(t)); :};
 
 literal ::=
 	L_COLACHO:l {: arbol.agregar(Expresion.literal("float", l)); :} |

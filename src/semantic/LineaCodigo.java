@@ -81,6 +81,7 @@ class BloqueCodigo implements Compilable{
 
 	public void compilar(Compilador compilador) {
 		for (LineaCodigo lineaCodigo : lineasCodigo) {
+			compilador.addLine();
 			lineaCodigo.compilar(compilador);
 		}
 	}
@@ -183,12 +184,22 @@ class Print extends LineaCodigo {
 
 	@Override
 	public void compilar(Compilador compilador) {
-		compilador.addLine("# Print");
+		compilador.addLine("# Print " + this.expresion);
 		this.expresion.compilar(compilador);
-		if(expresion.getTipo().nombre == Tipos.INT) {
-			compilador.addLine("li $v0, 1");
+		if(expresion.getTipo().nombre == Tipos.STRING) {
 			compilador.addLine("move $a0, $t0");
-			compilador.addLine("syscall");
+			compilador.addLine("li $v0, 4");
+		} else if(expresion.getTipo().nombre == Tipos.CHAR) {
+			compilador.addLine("move $a0, $t0");
+			compilador.addLine("li $v0, 11");
+		} else if(expresion.getTipo().nombre == Tipos.FLOAT) {
+			compilador.addLine("mov.s $f12, $f0");
+			compilador.addLine("li $v0, 2");
+		} else {
+			compilador.addLine("move $a0, $t0");
+			compilador.addLine("li $v0, 1");
 		}
+		compilador.addLine("syscall");
+		compilador.addLine("jal imprimir_salto_linea");
 	}
 }

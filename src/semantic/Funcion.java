@@ -32,9 +32,19 @@ public class Funcion implements Compilable {
 	public void compilar(Compilador compilador){
 		if(this.nombre == "main") compilador.addLine("main:");
 		else compilador.addLine("function_" + this.nombre + ":");
-		compilador.addLine("# Registro de activacion\nmove $fp, $sp");
+
 		this.bloqueCodigo.compilar(compilador);
-		compilador.addLine("jr $ra");
+
 		compilador.addLine();
+		if(this.nombre == "main") {
+			compilador.addLine("""
+				# Terminar el programa
+				li $v0, 10
+				syscall
+				""");
+		} else {
+			compilador.addLine("# Salir funcion " + this.nombre);
+			compilador.addLine("jr $ra");
+		}
 	}
 }

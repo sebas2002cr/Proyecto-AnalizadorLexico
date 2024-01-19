@@ -17,9 +17,9 @@ function float func1(char x22,char x22){@semantico borrar parametro
 
 	return -5.6|@cambio en retorno genera semantico
 
-} 
+}
 
-function float miFunc(int dif,char otra,char otra2){	
+function float miFunc(int dif,char otra,char otra2){
 	for(i <= 10,i<30*2,++i)
 	{
 		do{
@@ -54,18 +54,18 @@ function float miFunc(int dif,char otra,char otra2){
 }
 
 function string func3(string b1){ @semantico string
-	return b1| 
+	return b1|
 }
 
 function int main(){ @function
 /_
 Comentario 1
 _/
-	
+
 @comentario 2
 	local bool b1|
 	local string s1|
-	read(s1)| @semantico
+	read:string(s1)| @semantico
 	print(b1)| @semantico
 	print(true)| @semantico
 	print(-6.7)|

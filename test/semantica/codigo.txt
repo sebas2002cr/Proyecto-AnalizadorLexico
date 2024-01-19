@@ -22,7 +22,7 @@ function func1:float(x22:char[10], x22:char){
 function main() {
 	local b1:boolean|
 	local s1:string|
-	a1 := read()| //semantico
+	a1 := read:int()| //semantico
 	print(b1)| //semantico
 	print(true)| //semantico
 	print(6.7)|

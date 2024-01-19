@@ -6,6 +6,7 @@ import compilation.Compilador;
 
 public class ArbolSintactico implements Compilable {
 	ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+	private ArrayList<String> literalesString = new ArrayList<String>();
 	private ArrayList<ArrayList<Variable>> matrizVariables = new ArrayList<ArrayList<Variable>>();
 	private ArrayList<BloqueCodigo> bloquesCodigo = new ArrayList<BloqueCodigo>();
 	private ArrayList<ArrayList<Expresion>> matrizExpresiones = new ArrayList<ArrayList<Expresion>>();
@@ -35,7 +36,10 @@ public class ArbolSintactico implements Compilable {
 			matrizExpresiones.add(new ArrayList<Expresion>());
 		}
 		matrizExpresiones.get(matrizExpresiones.size() - 1).add(expresion);
-		// System.out.println(matrizExpresiones);
+		if(expresion.getClass() == Literal.class) {
+			Literal literal = (Literal)expresion;
+			if(literal.tipo.nombre == Tipos.STRING) this.literalesString.add(literal.valor);
+		}
 	}
 
 	// Añade una línea de código al último bloque de código de la pila
@@ -130,11 +134,25 @@ public class ArbolSintactico implements Compilable {
 
 	public void compilar(Compilador compilador) {
 		compilador.addLine(".data");
+		compilador.addLine("salto_linea: .asciiz \"\\n\"");
+		for (String literalString : this.literalesString) {
+			String nombreVariable = "string_" + compilador.randomString();
+			compilador.variables.put(literalString, nombreVariable);
+			compilador.addLine(nombreVariable + ": .asciiz " + literalString);
+		}
 		compilador.addLine();
 		compilador.addLine(".text");
 		for (Funcion funcion : this.funciones) {
 			funcion.compilar(compilador);
 		}
+		compilador.addLine();
+		compilador.addLine("""
+		imprimir_salto_linea:
+			li, $v0, 4
+			la $a0, salto_linea
+			syscall
+			jr $ra
+		""");
 	}
 }
 
