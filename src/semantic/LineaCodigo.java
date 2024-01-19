@@ -22,60 +22,56 @@ public class LineaCodigo implements Compilable {
 	}
 
 	public static DeclaracionAsignacionVariable declaracionAsignacionVariable(
-		ArrayList<Variable> variables, ArrayList<Expresion> expresiones
-	) {
+			ArrayList<Variable> variables, ArrayList<Expresion> expresiones) {
 		return new DeclaracionAsignacionVariable(variables.get(0), expresiones.get(0));
 	}
 
-	public static Return returnLine(ArrayList<Expresion> expresiones){
+	public static Return returnLine(ArrayList<Expresion> expresiones) {
 		return new Return(expresiones.get(0));
 	}
 
-	public static Break breakLine(){
+	public static Break breakLine() {
 		return new Break();
 	}
 
 	public static For forLine(
-		Object asignacion,
-		ArbolSintactico arbol,
-		ArrayList<Expresion> expresiones,
-		BloqueCodigo bloqueCodigo
-	) {
+			Object asignacion,
+			ArbolSintactico arbol,
+			ArrayList<Expresion> expresiones,
+			BloqueCodigo bloqueCodigo) {
 		String asigString = asignacion.toString();
 		int separador = asigString.indexOf("|");
 		String tipoAsignacion = asigString.substring(0, separador);
-		if(tipoAsignacion.equals("asignar_variable_declarada")) {
+		if (tipoAsignacion.equals("asignar_variable_declarada")) {
 			return new For(
-				new AsignacionVariable(asigString.substring(separador + 1), expresiones.get(0)),
-				expresiones.get(1),
-				expresiones.get(2),
-				bloqueCodigo
-			);
+					new AsignacionVariable(asigString.substring(separador + 1), expresiones.get(0)),
+					expresiones.get(1),
+					expresiones.get(2),
+					bloqueCodigo);
 		}
 		return new For(
-			new DeclaracionAsignacionVariable(arbol.variables(true).get(0), expresiones.get(0)),
-			expresiones.get(1),
-			expresiones.get(2),
-			bloqueCodigo
-		);
+				new DeclaracionAsignacionVariable(arbol.variables(true).get(0), expresiones.get(0)),
+				expresiones.get(1),
+				expresiones.get(2),
+				bloqueCodigo);
 	}
 
 	public static DoUntil doUntil(BloqueCodigo bloqueCodigo, ArrayList<Expresion> expresiones) {
 		return new DoUntil(bloqueCodigo, expresiones.get(0));
 	}
 
-	public static Print print(ArrayList<Expresion> expresiones){
+	public static Print print(ArrayList<Expresion> expresiones) {
 		return new Print(expresiones.get(0));
 	}
 
-	public void compilar(Compilador compilador){
+	public void compilar(Compilador compilador) {
 	}
 }
 
-class BloqueCodigo implements Compilable{
+class BloqueCodigo implements Compilable {
 	ArrayList<LineaCodigo> lineasCodigo = new ArrayList<LineaCodigo>();
 
-	public void agregar(LineaCodigo lineaCodigo){
+	public void agregar(LineaCodigo lineaCodigo) {
 		lineasCodigo.add(lineaCodigo);
 	}
 
@@ -97,10 +93,9 @@ class LineaExpresion extends LineaCodigo {
 	@Override
 	public void compilar(Compilador compilador) {
 		compilador.addLine(
-			"# LineaExpresion: " +
-			expresion.getClass().getSimpleName() + " -> " +
-			expresion.toString()
-		);
+				"# LineaExpresion: " +
+						expresion.getClass().getSimpleName() + " -> " +
+						expresion.toString());
 		expresion.compilar(compilador);
 	}
 }
@@ -139,9 +134,29 @@ class Return extends LineaCodigo {
 	Return(Expresion valor) {
 		this.valor = valor;
 	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		if (valor != null) {
+			valor.compilar(compilador);
+
+			// Empujar el resultado a la pila
+			if (valor.getTipo().nombre == Tipos.FLOAT) {
+				compilador.addLine("subu $sp, $sp, 4");
+				compilador.addLine("swc1 $f0, 0($sp)");
+			} else {
+				compilador.addLine("subu $sp, $sp, 4");
+				compilador.addLine("sw $v0, 0($sp)");
+			}
+		}
+
+		// Limpiar la pila después de la llamada
+		compilador.addLine("addu $sp, $sp, " + (valor.getTipo().nombre == Tipos.FLOAT ? 4 : 8));
+	}
 }
 
-class Break extends LineaCodigo {}
+class Break extends LineaCodigo {
+}
 
 class For extends LineaCodigo {
 	DeclaracionAsignacionVariable decAsiVariable;
@@ -150,7 +165,8 @@ class For extends LineaCodigo {
 	Expresion continuacion;
 	BloqueCodigo bloqueCodigo;
 
-	For(DeclaracionAsignacionVariable decAsiVariable, Expresion finalizacion, Expresion continuacion, BloqueCodigo bloqueCodigo) {
+	For(DeclaracionAsignacionVariable decAsiVariable, Expresion finalizacion, Expresion continuacion,
+			BloqueCodigo bloqueCodigo) {
 		this.decAsiVariable = decAsiVariable;
 		this.finalizacion = finalizacion;
 		this.continuacion = continuacion;
@@ -186,13 +202,13 @@ class Print extends LineaCodigo {
 	public void compilar(Compilador compilador) {
 		compilador.addLine("# Print " + this.expresion);
 		this.expresion.compilar(compilador);
-		if(expresion.getTipo().nombre == Tipos.STRING) {
+		if (expresion.getTipo().nombre == Tipos.STRING) {
 			compilador.addLine("move $a0, $t0");
 			compilador.addLine("li $v0, 4");
-		} else if(expresion.getTipo().nombre == Tipos.CHAR) {
+		} else if (expresion.getTipo().nombre == Tipos.CHAR) {
 			compilador.addLine("move $a0, $t0");
 			compilador.addLine("li $v0, 11");
-		} else if(expresion.getTipo().nombre == Tipos.FLOAT) {
+		} else if (expresion.getTipo().nombre == Tipos.FLOAT) {
 			compilador.addLine("mov.s $f12, $f0");
 			compilador.addLine("li $v0, 2");
 		} else {

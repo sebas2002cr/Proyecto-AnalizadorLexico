@@ -110,40 +110,32 @@ class LlamadaFuncion extends Expresion {
 
 	@Override
 	public void compilar(Compilador compilador) {
-		compilador.addLine("# Guardar el antiguo valor de $fp");
-		compilador.addLine("subu $sp, $sp, 4");
-		compilador.addLine("sw $fp, 0($sp)");
-
-		compilador.addLine("# Establecer $fp igual a $sp");
-		compilador.addLine("move $fp, $sp");
-
+		// Reservar espacio en la pila para los argumentos
 		int offset = 0;
 		for (Expresion argumento : argumentos) {
 			argumento.compilar(compilador);
-			compilador.addLine("# Reservar espacio para argumento en la pila");
 			if (argumento.getTipo() != null && argumento.getTipo().nombre == Tipos.FLOAT) {
-				compilador.addLine("subu $sp, $sp, 8");
-				compilador.addLine("swc1 $f0, " + offset + "($fp)");
+				compilador.addLine("subu $sp, $sp, 4");
+				compilador.addLine("swc1 $f0, " + offset + "($sp)");
 				offset += 4;
 			} else {
 				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("sw $t0, " + offset + "($fp)");
+				compilador.addLine("sw $t0, " + offset + "($sp)");
 				offset += 4;
 			}
 		}
 
-		compilador.addLine("# Llamada a la función");
+		// Mover fp a la posición actual de la pila
+		compilador.addLine("move $fp, $sp");
+
+		// Llamada a la función
 		compilador.addLine("jal " + nombre);
 
-		compilador.addLine("# Limpiar la pila después de la llamada");
-		compilador.addLine("addu $sp, $fp, " + offset);
+		// Limpiar la pila después de la llamada
+		compilador.addLine("addu $sp, $sp, " + offset);
 
-		compilador.addLine("# Restaurar el valor antiguo de $fp");
-		compilador.addLine("lw $fp, 0($sp)");
-		compilador.addLine("addu $sp, $sp, 4");
-
+		// Guardar el resultado si la función retorna un valor
 		if (this.getTipo() != null && this.getTipo().nombre != Tipos.NULL) {
-			compilador.addLine("# Guardar el resultado de la función");
 			if (this.getTipo().nombre == Tipos.FLOAT) {
 				compilador.addLine("subu $sp, $sp, 4");
 				compilador.addLine("swc1 $f0, 0($sp)");

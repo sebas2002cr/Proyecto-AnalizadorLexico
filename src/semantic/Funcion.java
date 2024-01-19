@@ -11,11 +11,10 @@ public class Funcion implements Compilable {
 	BloqueCodigo bloqueCodigo;
 
 	public Funcion(
-		Object nombre,
-		Object tipo,
-		ArrayList<Variable> parametros,
-		BloqueCodigo bloqueCodigo
-	) {
+			Object nombre,
+			Object tipo,
+			ArrayList<Variable> parametros,
+			BloqueCodigo bloqueCodigo) {
 		this.nombre = nombre.toString();
 		this.tipo = Tipo.fromString(tipo.toString());
 		this.parametros = parametros;
@@ -29,21 +28,25 @@ public class Funcion implements Compilable {
 		this.bloqueCodigo = bloqueCodigo;
 	}
 
-	public void compilar(Compilador compilador){
-		if(this.nombre == "main") compilador.addLine("main:");
-		else compilador.addLine("function_" + this.nombre + ":");
+	public void compilar(Compilador compilador) {
+		if (this.nombre == "main")
+			compilador.addLine("main:");
+		else
+			compilador.addLine("function_" + this.nombre + ":");
 
 		this.bloqueCodigo.compilar(compilador);
 
 		compilador.addLine();
-		if(this.nombre == "main") {
+		if (this.nombre == "main") {
 			compilador.addLine("""
-				# Terminar el programa
-				li $v0, 10
-				syscall
-				""");
+					# Terminar el programa
+					li $v0, 10
+					syscall
+					""");
 		} else {
 			compilador.addLine("# Salir funcion " + this.nombre);
+			// La limpieza de la pila
+			compilador.addLine("addu $sp, $sp, " + (this.tipo.nombre == Tipos.FLOAT ? 4 : 8));
 			compilador.addLine("jr $ra");
 		}
 	}
