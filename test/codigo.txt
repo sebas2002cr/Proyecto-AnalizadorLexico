@@ -1,13 +1,13 @@
 
 function main() {
+	123 |
+	print(1092) |
+	print("imprimir string") |
+	local var:string := "hola" |
 	local num:int |
-	local var:float := 345.45 |
-	local var:string := read:int() |
-	
-	
-
-}
-
-function prueba:int() {
-
+	local fr:boolean := true |
+	print(fr) |
+	print(true) |
+	print('a') |
+	print(3.14) |
 }

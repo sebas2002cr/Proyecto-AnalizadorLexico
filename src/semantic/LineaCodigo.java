@@ -169,6 +169,19 @@ class AsignacionVariable extends LineaCodigo {
 		this.nombreVariable = nombreVariable;
 		this.asignacion = asignacion;
 	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		compilador.addLine("# Asignación de variable: " + nombreVariable);
+
+		// Compilar la asignación de la variable
+		asignacion.compilar(compilador);
+
+		// Utilizar el compilador para almacenar el valor en la dirección de la variable
+		// en la pila
+		compilador.addLine(
+				"sw $t0, " + compilador.getStackOffsetForVariable(new Variable(nombreVariable, null)) + "($sp)");
+	}
 }
 
 class Return extends LineaCodigo {
