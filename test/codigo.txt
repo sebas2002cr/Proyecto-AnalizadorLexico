@@ -1,13 +1,11 @@
 
 function main() {
-	123 |
-	print(1092) |
-	print("imprimir string") |
-	@@ local var:string := read:int() |
-	print(true) |
-	print('a') |
-	print(3.14) |
-	prueba()|
+	local num:int |
+	local var:float := 345.45 |
+	local var:string := read:int() |
+	
+	
+
 }
 
 function prueba:int() {

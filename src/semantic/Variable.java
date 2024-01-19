@@ -13,4 +13,8 @@ public class Variable {
 	public String toString() {
 		return this.nombre;
 	}
+
+	public Tipo getTipo() {
+		return this.tipo;
+	}
 }

@@ -1,52 +1,22 @@
 .data
 salto_linea: .asciiz "\n"
-string_xlzsrgwycy: .asciiz "imprimir string"
 
 .text
 main:
 
-# LineaExpresion: Literal -> 123
-li $t0, 123
+# Declaración de variable: num, Tipo: INT
+subu $sp, $sp, 4
+sw $t0, 0($sp)
 
-# Print 1092
-li $t0, 1092
-move $a0, $t0
-li $v0, 1
-syscall
-jal imprimir_salto_linea
+# Declaración y asignación de variable: var, Tipo: FLOAT
+li.s $f0, 345.45
+s.s $f0, 0($sp)
+addu $sp, $sp, 4
 
-# Print "imprimir string"
-la $t0, string_xlzsrgwycy
-move $a0, $t0
-li $v0, 4
-syscall
-jal imprimir_salto_linea
-
-# Print true
-li $t0, 1
-move $a0, $t0
-li $v0, 1
-syscall
-jal imprimir_salto_linea
-
-# Print 'a'
-li $t0, 97
-move $a0, $t0
-li $v0, 11
-syscall
-jal imprimir_salto_linea
-
-# Print 3.14
-li.s $f0, 3.14
-mov.s $f12, $f0
-li $v0, 2
-syscall
-jal imprimir_salto_linea
-
-# LineaExpresion: LlamadaFuncion -> prueba
-move $fp, $sp
-jal prueba
-addu $sp, $sp, 0
+# Declaración y asignación de variable: var, Tipo: STRING
+lw $t0, 0($sp)
+sw $t0, 0($sp)
+addu $sp, $sp, 4
 
 # Terminar el programa
 li $v0, 10

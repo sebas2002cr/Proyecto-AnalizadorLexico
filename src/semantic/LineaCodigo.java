@@ -106,15 +106,26 @@ class DeclaracionesVariables extends LineaCodigo {
 	DeclaracionesVariables(ArrayList<Variable> declaraciones) {
 		this.declaraciones = declaraciones;
 	}
-}
 
-class AsignacionVariable extends LineaCodigo {
-	String nombreVariable;
-	Expresion asignacion;
+	@Override
+	public void compilar(Compilador compilador) {
+		for (Variable variable : declaraciones) {
+			// Utilizar el compilador para asignar la dirección en la pila
+			compilador.assignStackOffsetForVariable(variable);
+			compilador.addLine("# Declaración de variable: " + variable.nombre + ", Tipo: " + variable.tipo.nombre);
 
-	AsignacionVariable(String nombreVariable, Expresion asignacion) {
-		this.nombreVariable = nombreVariable;
-		this.asignacion = asignacion;
+			// Verificar si es una variable de tipo FLOAT
+			if (variable.tipo.nombre == Tipos.FLOAT) {
+				// Reservar espacio en la pila para almacenar el valor (4 bytes para FLOAT)
+				compilador.addLine("subu $sp, $sp, 4");
+				compilador.addLine("s.s $f0, 0($sp)");
+			} else {
+				// Reservar espacio en la pila para almacenar el valor (4 bytes para otros
+				// tipos)
+				compilador.addLine("subu $sp, $sp, 4");
+				compilador.addLine("sw $t0, 0($sp)");
+			}
+		}
 	}
 }
 
@@ -124,6 +135,48 @@ class DeclaracionAsignacionVariable extends LineaCodigo {
 
 	DeclaracionAsignacionVariable(Variable declaracion, Expresion asignacion) {
 		this.declaracion = declaracion;
+		this.asignacion = asignacion;
+	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		compilador.addLine("# Declaración y asignación de variable: " + declaracion.nombre +
+				", Tipo: " + declaracion.tipo.nombre);
+
+		// Compilar la asignación de la variable
+		asignacion.compilar(compilador);
+
+		// Utilizar el compilador para almacenar el valor en la dirección de la variable
+		// en la pila
+		// Verificar si es una variable de tipo FLOAT
+		if (declaracion.tipo.nombre == Tipos.FLOAT) {
+			compilador.addLine("s.s $f0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)"); // Almacenar
+																											// el valor
+																											// en la
+																											// dirección
+																											// de la
+																											// variable
+		} else {
+			compilador.addLine("lw $t0, 0($sp)"); // Cargar el valor desde la pila al registro $t0
+			compilador.addLine("sw $t0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)"); // Almacenar
+																											// el valor
+																											// en la
+																											// dirección
+																											// de la
+																											// variable
+		}
+
+		// Ajustar el puntero de la pila después de almacenar el valor
+		compilador.addLine("addu $sp, $sp, 4");
+	}
+}
+
+class AsignacionVariable extends LineaCodigo {
+	String nombreVariable;
+	Expresion asignacion;
+
+	AsignacionVariable(String nombreVariable, Expresion asignacion) {
+		this.nombreVariable = nombreVariable;
 		this.asignacion = asignacion;
 	}
 }
