@@ -1,6 +1,6 @@
 .data
 salto_linea: .asciiz "\n"
-string_btbdggqcth: .asciiz "imprimir string"
+string_wmirffmqac: .asciiz "imprimir string"
 
 .text
 main:
@@ -16,7 +16,7 @@ syscall
 jal imprimir_salto_linea
 
 # Print "imprimir string"
-la $t0, string_btbdggqcth
+la $t0, string_wmirffmqac
 move $a0, $t0
 li $v0, 4
 syscall
@@ -42,6 +42,20 @@ mov.s $f12, $f0
 li $v0, 2
 syscall
 jal imprimir_salto_linea
+
+# LineaExpresion: LlamadaFuncion -> prueba
+# Guardar el antiguo valor de $fp
+subu $sp, $sp, 4
+sw $fp, 0($sp)
+# Establecer $fp igual a $sp
+move $fp, $sp
+# Llamada a la función
+jal prueba
+# Limpiar la pila después de la llamada
+addu $sp, $fp, 0
+# Restaurar el valor antiguo de $fp
+lw $fp, 0($sp)
+addu $sp, $sp, 4
 
 # Terminar el programa
 li $v0, 10
