@@ -35,4 +35,28 @@ function main() {
 	print(true # true) |
 	print(2 ** 3) |
 	print(10 ** 4) |
+	if(true = true) {
+		print("adentro del if") |
+		if(1 <> 1) {
+			print("adentro de otro if") |
+		}
+	}
+	if(true = false) {
+		print("not if") |
+	} elif (1 = 0) {
+		print("no elif") |
+	} elif (1 = 0) {
+		print("adentro de elif") |
+	} else {
+		print("else") |
+	}
+	do {
+		print("dountil") |
+	} until (true = true) |
+	print("antes ciclo") |
+	do {
+		break |
+		print("en ciclo") |
+	} until (true = true) |
+	print("después ciclo") |
 }

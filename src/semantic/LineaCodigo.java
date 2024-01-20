@@ -216,6 +216,11 @@ class Return extends LineaCodigo {
 }
 
 class Break extends LineaCodigo {
+	@Override
+	public void compilar(Compilador compilador) {
+		String etiqueta = compilador.lastFinalLabelLoop();
+		compilador.addLine("j " + etiqueta);
+	}
 }
 
 class For extends LineaCodigo {
@@ -248,6 +253,18 @@ class DoUntil extends LineaCodigo {
 	DoUntil(BloqueCodigo bloqueCodigo, Expresion condicion) {
 		this.bloqueCodigo = bloqueCodigo;
 		this.condicion = condicion;
+	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		String idEtiqueta = compilador.randomString();
+		compilador.addFinalLabelLoop("final_do_until_" + idEtiqueta);
+		compilador.addLine("# Do until");
+		compilador.addLine("do_until_" + idEtiqueta + ":");
+		this.bloqueCodigo.compilar(compilador);
+		this.condicion.compilar(compilador);
+		compilador.addLine("beq $t0, $zero, do_until_" + idEtiqueta);
+		compilador.addLine("final_do_until_" + idEtiqueta + ":");
 	}
 }
 

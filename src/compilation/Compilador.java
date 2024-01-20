@@ -2,6 +2,7 @@ package compilation;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -16,6 +17,7 @@ public class Compilador {
 	private FileWriter fileWriter;
 	private int nextStackOffset = 0;
 	private Map<Variable, Integer> variableStackOffsets = new HashMap<>();
+	private ArrayList<String> finalLabelLoops = new ArrayList<String>();
 
 	public void compilar(String source, String destination) throws Exception {
 		ArbolSintactico arbolSintactico = Syntax.parse(source);
@@ -56,6 +58,14 @@ public class Compilador {
 
 	public void addLine() {
 		this.addLine("");
+	}
+
+	public void addFinalLabelLoop(String finalLabelLoop) {
+		finalLabelLoops.add(finalLabelLoop);
+	}
+
+	public String lastFinalLabelLoop() {
+		return this.finalLabelLoops.get(this.finalLabelLoops.size() - 1);
 	}
 
 	public String randomString() {
