@@ -110,20 +110,19 @@ class DeclaracionesVariables extends LineaCodigo {
 	@Override
 	public void compilar(Compilador compilador) {
 		for (Variable variable : declaraciones) {
-			// Utilizar el compilador para asignar la dirección en la pila
-			compilador.assignStackOffsetForVariable(variable);
+			// Asignar desplazamiento en la pila a la variable
+			int desplazamiento = compilador.reserveStackSpace(4); // Ajusta según el tamaño deseado en bytes
+			variable.setDesplazamiento(desplazamiento);
+
+			// Agregar comentarios y código MIPS según el tipo de variable
 			compilador.addLine("# Declaración de variable: " + variable.nombre + ", Tipo: " + variable.tipo.nombre);
 
-			// Verificar si es una variable de tipo FLOAT
 			if (variable.tipo.nombre == Tipos.FLOAT) {
-				// Reservar espacio en la pila para almacenar el valor (4 bytes para FLOAT)
 				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("s.s $f0, 0($sp)");
+				compilador.addLine("s.s $f0, " + desplazamiento + "($sp)");
 			} else {
-				// Reservar espacio en la pila para almacenar el valor (4 bytes para otros
-				// tipos)
 				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("sw $t0, 0($sp)");
+				compilador.addLine("sw $t0, " + desplazamiento + "($sp)");
 			}
 		}
 	}
@@ -146,24 +145,21 @@ class DeclaracionAsignacionVariable extends LineaCodigo {
 		// Compilar la asignación de la variable
 		asignacion.compilar(compilador);
 
+		// Obtener el desplazamiento de la pila para la variable
+		int desplazamiento = declaracion.getDesplazamiento();
+
 		// Utilizar el compilador para almacenar el valor en la dirección de la variable
 		// en la pila
 		if (declaracion.tipo.nombre == Tipos.STRING) {
 			// La cadena ya debería estar en $t0
-			compilador.addLine("sw $t0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)"); // Almacenar
-																											// la cadena
-																											// en la
-																											// pila
+			compilador.addLine("sw $t0, " + desplazamiento + "($sp)"); // Almacenar la cadena en la pila
 		} else if (declaracion.tipo.nombre == Tipos.FLOAT) {
-			// Tratar como variable de tipo FLOAT
-			// Asumiendo que ya manejaste las variables de tipo FLOAT
+			// Almacenar el valor en la dirección de la variable en la pila
+			compilador.addLine("subu $sp, $sp, 4");
+			compilador.addLine("s.s $f0, " + desplazamiento + "($sp)"); // Almacenar el valor flotante
 		} else {
 			// Tratar como otros tipos de variables (INT, CHAR, BOOLEAN, etc.)
-			// Asumiendo que ya manejaste esos tipos de variables
-			compilador.addLine("sw $t0, " + compilador.getStackOffsetForVariable(declaracion) + "($sp)"); // Almacenar
-																											// el valor
-																											// en la
-																											// pila
+			compilador.addLine("sw $t0, " + desplazamiento + "($sp)"); // Almacenar el valor en la pila
 		}
 
 		// Ajustar el puntero de la pila después de almacenar el valor
