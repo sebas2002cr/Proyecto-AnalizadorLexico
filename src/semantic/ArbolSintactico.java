@@ -154,7 +154,21 @@ public class ArbolSintactico implements Compilable {
 			li, $v0, 4
 			la $a0, salto_linea
 			syscall
-			jr $ra""");
+			jr $ra
+
+		potencia:
+			# $t1: base
+			# $t0: exponente
+			# $t0 -> resultado
+			li $t2, 1
+			multiplicar_potencia:
+       			beq $t0, $zero, salir_potencia
+        		mul $t2, $t2, $t1
+        		addi $t0, $t0, -1
+        		j multiplicar_potencia
+			salir_potencia:
+				move $t0, $t2
+				jr $ra""");
 	}
 }
 
