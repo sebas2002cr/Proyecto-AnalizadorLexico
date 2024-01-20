@@ -1,8 +1,8 @@
 .data
 salto_linea: .asciiz "\n"
 resultado_read: .space 100
-string_uyortncswf: .asciiz "imprimir string"
-string_xpirsyxkhf: .asciiz "hola"
+string_emxjbogyym: .asciiz "imprimir string"
+string_urtwxyjdwk: .asciiz "hola"
 
 .text
 main:
@@ -18,25 +18,23 @@ syscall
 jal imprimir_salto_linea
 
 # Print "imprimir string"
-la $t0, string_uyortncswf
+la $t0, string_emxjbogyym
 move $a0, $t0
 li $v0, 4
 syscall
 jal imprimir_salto_linea
 
-# Declaraci髇 y asignaci髇 de variable: var, Tipo: STRING
-la $t0, string_xpirsyxkhf
-lw $t0, 0($sp)
+# Declaraci贸n y asignaci贸n de variable: var, Tipo: STRING
+la $t0, string_urtwxyjdwk
 sw $t0, 0($sp)
 addu $sp, $sp, 4
 
-# Declaraci髇 de variable: num, Tipo: INT
+# Declaraci贸n de variable: num, Tipo: INT
 subu $sp, $sp, 4
 sw $t0, 0($sp)
 
-# Declaraci髇 y asignaci髇 de variable: fr, Tipo: BOOLEAN
+# Declaraci贸n y asignaci贸n de variable: fr, Tipo: BOOLEAN
 li $t0, 1
-lw $t0, 0($sp)
 sw $t0, 0($sp)
 addu $sp, $sp, 4
 
@@ -61,7 +59,7 @@ li $v0, 2
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@52cc8049
+# Print semantic.Operacion@24d46ca6
 li $t0, 3
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -79,7 +77,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@5b6f7412
+# Print semantic.Operacion@4517d9a3
 li $t0, 14
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -94,7 +92,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@27973e9b
+# Print semantic.Operacion@372f7a8d
 li $t0, 1
 # INCREMENTO
 addi $t0, $t0, 1
@@ -103,7 +101,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@312b1dae
+# Print semantic.Operacion@2f92e0f4
 li $t0, 1
 # DECREMENTO
 addi $t0, $t0, -1
@@ -113,7 +111,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@7530d0a
+# Print semantic.Operacion@28a418fc
 li $t0, 1
 # NEGATIVO
 li $t1, -1
@@ -123,7 +121,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@27bc2616
+# Print semantic.Operacion@5305068a
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -131,17 +129,17 @@ li $t0, 2
 # DISTINTO
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
-bne $t0, $t1, distinto_flbxghxqky
+bne $t0, $t1, distinto_cgghcipzez
 li $t0, 0
-j no_distinto_flbxghxqky
-distinto_flbxghxqky: li $t0, 1
-no_distinto_flbxghxqky:
+j no_distinto_cgghcipzez
+distinto_cgghcipzez: li $t0, 1
+no_distinto_cgghcipzez:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@4edde6e5
+# Print semantic.Operacion@4a574795
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -149,17 +147,17 @@ li $t0, 2
 # IGUAL
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
-beq $t0, $t1, igual_oefukmrvfk
+beq $t0, $t1, igual_dfaluinhdp
 li $t0, 0
-j no_igual_oefukmrvfk
-igual_oefukmrvfk: li $t0, 1
-no_igual_oefukmrvfk:
+j no_igual_dfaluinhdp
+igual_dfaluinhdp: li $t0, 1
+no_igual_dfaluinhdp:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@70177ecd
+# Print semantic.Operacion@f6f4d33
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -173,7 +171,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@1e80bfe8
+# Print semantic.Operacion@23fc625e
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -187,7 +185,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@66a29884
+# Print semantic.Operacion@3f99bd52
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -197,17 +195,17 @@ lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t0, $t1
 li $t1, 0
-beq $t0, $t1, menor_igual_hmmlhvqcro
+beq $t0, $t1, menor_igual_oeiglmyfpu
 li $t0, 0
-j no_menor_igual_hmmlhvqcro
-menor_igual_hmmlhvqcro: li $t0, 1
-no_menor_igual_hmmlhvqcro:
+j no_menor_igual_oeiglmyfpu
+menor_igual_oeiglmyfpu: li $t0, 1
+no_menor_igual_oeiglmyfpu:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@4769b07b
+# Print semantic.Operacion@4f023edb
 li $t0, 0
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -217,17 +215,17 @@ lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t0, $t1
 li $t1, 0
-beq $t0, $t1, menor_igual_gizphpvssz
+beq $t0, $t1, menor_igual_nheuggdbld
 li $t0, 0
-j no_menor_igual_gizphpvssz
-menor_igual_gizphpvssz: li $t0, 1
-no_menor_igual_gizphpvssz:
+j no_menor_igual_nheuggdbld
+menor_igual_nheuggdbld: li $t0, 1
+no_menor_igual_nheuggdbld:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@cc34f4d
+# Print semantic.Operacion@3a71f4dd
 li $t0, 2
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -237,17 +235,17 @@ lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t0, $t1
 li $t1, 0
-beq $t0, $t1, menor_igual_zujrnkaaiu
+beq $t0, $t1, menor_igual_ndimxvhzhm
 li $t0, 0
-j no_menor_igual_zujrnkaaiu
-menor_igual_zujrnkaaiu: li $t0, 1
-no_menor_igual_zujrnkaaiu:
+j no_menor_igual_ndimxvhzhm
+menor_igual_ndimxvhzhm: li $t0, 1
+no_menor_igual_ndimxvhzhm:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@17a7cec2
+# Print semantic.Operacion@7adf9f5f
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -257,17 +255,17 @@ lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t1, $t0
 li $t1, 0
-beq $t0, $t1, mayor_igual_flnqikongr
+beq $t0, $t1, mayor_igual_lprlwsxcfc
 li $t0, 0
-j no_mayor_igual_flnqikongr
-mayor_igual_flnqikongr: li $t0, 1
-no_mayor_igual_flnqikongr:
+j no_mayor_igual_lprlwsxcfc
+mayor_igual_lprlwsxcfc: li $t0, 1
+no_mayor_igual_lprlwsxcfc:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@65b3120a
+# Print semantic.Operacion@85ede7b
 li $t0, 0
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -277,17 +275,17 @@ lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t1, $t0
 li $t1, 0
-beq $t0, $t1, mayor_igual_akujpsjkgi
+beq $t0, $t1, mayor_igual_puqtiiluam
 li $t0, 0
-j no_mayor_igual_akujpsjkgi
-mayor_igual_akujpsjkgi: li $t0, 1
-no_mayor_igual_akujpsjkgi:
+j no_mayor_igual_puqtiiluam
+mayor_igual_puqtiiluam: li $t0, 1
+no_mayor_igual_puqtiiluam:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@6f539caf
+# Print semantic.Operacion@5674cd4d
 li $t0, 2
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -297,17 +295,17 @@ lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t1, $t0
 li $t1, 0
-beq $t0, $t1, mayor_igual_igadugfvnf
+beq $t0, $t1, mayor_igual_wfsmhycpot
 li $t0, 0
-j no_mayor_igual_igadugfvnf
-mayor_igual_igadugfvnf: li $t0, 1
-no_mayor_igual_igadugfvnf:
+j no_mayor_igual_wfsmhycpot
+mayor_igual_wfsmhycpot: li $t0, 1
+no_mayor_igual_wfsmhycpot:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@79fc0f2f
+# Print semantic.Operacion@63961c42
 li $t0, 9
 # SUMA
 lw $t1, 0($sp)
@@ -318,17 +316,17 @@ lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t0, $t1
 li $t1, 0
-beq $t0, $t1, menor_igual_hsxlughkmo
+beq $t0, $t1, menor_igual_jowqlmdfma
 li $t0, 0
-j no_menor_igual_hsxlughkmo
-menor_igual_hsxlughkmo: li $t0, 1
-no_menor_igual_hsxlughkmo:
+j no_menor_igual_jowqlmdfma
+menor_igual_jowqlmdfma: li $t0, 1
+no_menor_igual_jowqlmdfma:
 move $a0, $t0
 li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@50040f0c
+# Print semantic.Operacion@65b54208
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -342,7 +340,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@2dda6444
+# Print semantic.Operacion@1be6f5c3
 li $t0, 2
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -356,7 +354,7 @@ li $v0, 1
 syscall
 jal imprimir_salto_linea
 
-# Print semantic.Operacion@5e9f23b4
+# Print semantic.Operacion@6b884d57
 li $t0, 10
 subu $sp, $sp, 4
 sw $t0, 0($sp)
