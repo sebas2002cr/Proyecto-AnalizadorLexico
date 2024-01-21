@@ -1,11 +1,11 @@
 .data
 salto_linea: .asciiz "\n"
 resultado_read: .space 100
-string_jnevfgpzsr: .asciiz "en main"
-string_kkxrfaaamh: .asciiz "\n"
-string_qpwnsblpmy: .asciiz "prueba en prueba"
-string_hwzhwzugnh: .asciiz "variable"
-string_zsgqxvjbyt: .asciiz "\nfunciÃ³n de string"
+string_ydeqvbelfr: .asciiz "en main"
+string_odaveuwsyo: .asciiz "\n"
+string_tkeuoiplql: .asciiz "prueba en prueba"
+string_svclnkqpkv: .asciiz "variable"
+string_hrtvxjqhgo: .asciiz "\nfunciÃ³n de string"
 
 .text
 main:
@@ -40,12 +40,12 @@ syscall
 # jal imprimir_salto_linea
 
 # Declaración y asignación de variable: texto, Tipo: STRING
-la $t0, string_jnevfgpzsr
+la $t0, string_ydeqvbelfr
 subu $sp, $sp, 4
 sw $t0, 0($sp)
 
 # Print "\n"
-la $t0, string_kkxrfaaamh
+la $t0, string_odaveuwsyo
 move $a0, $t0
 li $v0, 4
 syscall
@@ -65,7 +65,7 @@ syscall
 function_prueba:
 
 # Print "prueba en prueba"
-la $t0, string_qpwnsblpmy
+la $t0, string_tkeuoiplql
 move $a0, $t0
 li $v0, 4
 syscall
@@ -82,12 +82,12 @@ jr $ra
 function_cadena:
 
 # Declaración y asignación de variable: variable, Tipo: STRING
-la $t0, string_hwzhwzugnh
+la $t0, string_svclnkqpkv
 subu $sp, $sp, 4
 sw $t0, 0($sp)
 
 # Print "\n"
-la $t0, string_kkxrfaaamh
+la $t0, string_odaveuwsyo
 move $a0, $t0
 li $v0, 4
 syscall
@@ -100,13 +100,38 @@ li $v0, 4
 syscall
 # jal imprimir_salto_linea
 
-la $t0, string_zsgqxvjbyt
+# Declaración y asignación de variable: numero, Tipo: INT
+li $t0, 20
+subu $sp, $sp, 4
+sw $t0, 0($sp)
+
+# LineaExpresion: Operacion -> semantic.Operacion@27bc2616
+lw $t0, -16($fp)
+# DECREMENTO
+addi $t0, $t0, -1
+sw $t0, -16($fp)
+
+# Print "\n"
+la $t0, string_odaveuwsyo
+move $a0, $t0
+li $v0, 4
+syscall
+# jal imprimir_salto_linea
+
+# Print numero
+lw $t0, -16($fp)
+move $a0, $t0
+li $v0, 1
+syscall
+# jal imprimir_salto_linea
+
+la $t0, string_hrtvxjqhgo
 # Return
-addu $sp, $sp, 4 # Libera las variables de la pila
+addu $sp, $sp, 8 # Libera las variables de la pila
 jr $ra
 
 # Salir funcion cadena
-addu $sp, $sp, 4 # Libera las variables de la pila
+addu $sp, $sp, 8 # Libera las variables de la pila
 jr $ra
 
 imprimir_salto_linea:

@@ -4,9 +4,11 @@ function main() {
 	print(1092) |
 	print("imprimir string") |
 	local var:string := "hola" |
+	print(var) |
 	local num:int |
 	local fr:boolean := true |
-	@@ print(fr) |
+	print("\n") |
+	print(fr) |
 	print(true) |
 	print('a') |
 	print(3.14) |
@@ -59,4 +61,7 @@ function main() {
 		print("en ciclo") |
 	} until (true = true) |
 	print("después ciclo") |
+	local numero:int := 20 |
+	++numero |
+	print(++numero) |
 }

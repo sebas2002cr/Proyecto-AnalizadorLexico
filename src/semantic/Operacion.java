@@ -167,12 +167,22 @@ public class Operacion extends Expresion {
 				if(this.operando.tipo == Operandos.DECREMENTO) {
 					compilador.addLine("addi $t0, $t0, -1");
 				}
-				if(this.operando.tipo == Operandos.DECREMENTO) {
-					compilador.addLine("addi $t0, $t0, -1");
-				}
 				if(this.operando.tipo == Operandos.NEGATIVO) {
 					compilador.addLine("li $t1, -1");
 					compilador.addLine("mul $t0, $t0, $t1");
+				}
+				if(this.operando.tipo == Operandos.NOT) {
+					compilador.addLine("xori $t0, $t0, 1");
+				}
+				if(this.derecha.valor.getClass() == Identificador.class) {
+					if(
+						this.operando.tipo == Operandos.INCREMENTO ||
+						this.operando.tipo == Operandos.DECREMENTO
+					) compilador.addLine(
+						"sw $t0, " +
+						compilador.getStackOffsetForVariable(((Identificador)this.derecha.valor).identificador) +
+						"($fp)"
+					);
 				}
 			} else {
 				// Sacamos el valor de izquierda de la pila
