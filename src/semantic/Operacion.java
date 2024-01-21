@@ -260,8 +260,9 @@ public class Operacion extends Expresion {
 				}
 				if (this.operando.tipo == Operandos.DIVISION) {
 					if (this.getTipo().nombre == Tipos.FLOAT) {
-						compilador.addLine("div.s $f1, $f0");
-						compilador.addLine("swc1 $f1, 0($sp)");
+						compilador.addLine("l.s $f1, 0($sp)");
+						compilador.addLine("div.s $f0, $f1, $f0");
+						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
 						compilador.addLine("lw $t1, 0($sp)");
 						compilador.addLine("addiu $sp, $sp, 4");
