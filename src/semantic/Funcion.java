@@ -7,8 +7,8 @@ import compilation.Compilador;
 public class Funcion implements Compilable {
 	String nombre;
 	Tipo tipo;
-	ArrayList<Variable> parametros;
 	BloqueCodigo bloqueCodigo;
+	public ArrayList<Variable> parametros;
 
 	public Funcion(
 		Object nombre,
@@ -30,9 +30,11 @@ public class Funcion implements Compilable {
 	}
 
 	public void compilar(Compilador compilador) {
-		if (this.nombre == "main")
+		compilador.ultimaFuncion = this;
+		if (this.nombre == "main") {
 			compilador.addLine("main:");
-		else
+			compilador.addLine("move $fp, $sp");
+		} else
 			compilador.addLine("function_" + this.nombre + ":");
 
 		for (Variable parametro : this.parametros) {
@@ -51,6 +53,11 @@ public class Funcion implements Compilable {
 			""");
 		} else {
 			compilador.addLine("# Salir funcion " + this.nombre);
+			compilador.addLine(
+				"addu $sp, $sp, " +
+				compilador.getNextStackOffset() +
+				" # Libera las variables de la pila"
+			);
 			compilador.addLine("jr $ra");
 		}
 

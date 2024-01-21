@@ -208,6 +208,11 @@ class Return extends LineaCodigo {
 	public void compilar(Compilador compilador) {
 		this.valor.compilar(compilador);
 		compilador.addLine("# Return");
+		compilador.addLine(
+			"addu $sp, $sp, " +
+			compilador.getNextStackOffset() +
+			" # Libera las variables de la pila"
+		);
 		compilador.addLine("jr $ra");
 		// if (valor != null) {
 		// 	valor.compilar(compilador);

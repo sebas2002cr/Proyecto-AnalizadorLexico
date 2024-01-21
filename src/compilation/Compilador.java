@@ -16,6 +16,7 @@ public class Compilador {
 	public HashMap<String, String> stringGlobales = new HashMap<String, String>();
 	public ArrayList<Funcion> funciones;
 	public HashMap<String, Tipo> tiposVariables = new HashMap<String, Tipo>();
+	public Funcion ultimaFuncion;
 	private FileWriter fileWriter;
 	private int nextStackOffset = 0;
 	private HashMap<String, Integer> variableStackOffsets = new HashMap<String, Integer>();
@@ -55,7 +56,7 @@ public class Compilador {
 	// }
 
 	public int getNextStackOffset() {
-		return nextStackOffset;
+		return nextStackOffset - (ultimaFuncion.parametros.size() * 4);
 	}
 
 	public int getStackOffsetForVariable(String nombreVariable) {
