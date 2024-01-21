@@ -37,6 +37,20 @@ public class Compilador {
 		}
 	}
 
+	public String getTipoVariable(String nombreVariable) {
+		return variables.get(nombreVariable);
+	}
+
+	public Variable getVariable(String nombre) {
+		for (Map.Entry<Variable, Integer> entry : variableStackOffsets.entrySet()) {
+			Variable variable = entry.getKey();
+			if (variable.toString().equals(nombre)) {
+				return variable;
+			}
+		}
+		return null; // Variable no encontrada
+	}
+
 	public int getNextStackOffset() {
 		return nextStackOffset;
 	}

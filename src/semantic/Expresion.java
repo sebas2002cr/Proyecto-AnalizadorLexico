@@ -75,6 +75,8 @@ class Literal extends Expresion {
 
 class Identificador extends Expresion {
 	String identificador;
+	Compilador comp;
+	String var;
 
 	public Identificador(Object identificador) {
 		this.identificador = identificador.toString();
@@ -82,7 +84,43 @@ class Identificador extends Expresion {
 
 	@Override
 	public String toString() {
-		return this.identificador;
+		return this.comp.variables.values().toString();
+	}
+
+	@Override
+	public void compilar(Compilador compilador) {
+		// Obtener el desplazamiento para la variable
+		var = this.comp.variables.values().toString();
+		System.out.println(var);
+		int desplazamiento = getDesplazamiento(compilador, this.identificador);
+
+		// Cargar el valor desde la memoria a $t0 (o $f0 para variables de punto
+		// flotante)
+		if (getTipoVariable(compilador, this.identificador) == Tipos.FLOAT) {
+			compilador.addLine("l.s $f0, " + desplazamiento + "($fp)");
+		} else {
+			compilador.addLine("lw $t0, " + desplazamiento + "($fp)");
+		}
+	}
+
+	private int getDesplazamiento(Compilador compilador, String identificador) {
+		// Utilizar el nuevo método getVariable
+		Variable variable = compilador.getVariable(identificador);
+		if (variable != null) {
+			return compilador.getStackOffsetForVariable(variable);
+		} else {
+			// Manejar el caso en que la variable no se encuentra
+			throw new RuntimeException("Variable no encontrada: " + identificador);
+		}
+	}
+
+	private Tipos getTipoVariable(Compilador compilador, String identificador) {
+		Variable variable = compilador.getVariable(identificador);
+		if (variable != null) {
+			return variable.getTipo().nombre;
+		} else {
+			throw new RuntimeException("Variable no encontrada: " + identificador);
+		}
 	}
 }
 
@@ -106,14 +144,14 @@ class Read extends Expresion {
 	@Override
 	public void compilar(Compilador compilador) {
 		compilador.addLine("# Read " + tipo.nombre);
-		if(tipo.nombre == Tipos.INT){
+		if (tipo.nombre == Tipos.INT) {
 			compilador.addLine("li $v0, 5");
 			compilador.addLine("syscall");
 			compilador.addLine("move $t0, $v0");
-		} else if(tipo.nombre == Tipos.FLOAT) {
+		} else if (tipo.nombre == Tipos.FLOAT) {
 			compilador.addLine("li $v0, 6");
 			compilador.addLine("syscall");
-		} else if(tipo.nombre == Tipos.STRING) {
+		} else if (tipo.nombre == Tipos.STRING) {
 			compilador.addLine("li $v0, 8");
 			compilador.addLine("la $a0, resultado_read");
 			compilador.addLine("la $a1, 100");
