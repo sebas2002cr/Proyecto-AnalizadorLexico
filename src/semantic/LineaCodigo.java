@@ -256,26 +256,13 @@ class For extends LineaCodigo {
 			asigVariable.compilar(compilador);
 		}
 
-		// Etiqueta de inicio del bucle
 		String idInicioBucle = compilador.randomString();
 		compilador.addLine("for_inicio_" + idInicioBucle + ":");
-
-		// Compilar la expresión de finalización
 		finalizacion.compilar(compilador);
-
-		// Comprobar la condición de finalización
 		compilador.addLine("beq $t0, $zero, for_fin_" + idInicioBucle);
-
-		// Compilar el bloque de código del bucle
 		bloqueCodigo.compilar(compilador);
-
-		// Compilar la expresión de continuación
 		continuacion.compilar(compilador);
-
-		// Salto de vuelta al inicio del bucle
 		compilador.addLine("j for_inicio_" + idInicioBucle);
-
-		// Etiqueta de fin del bucle
 		compilador.addLine("for_fin_" + idInicioBucle + ":");
 	}
 }
