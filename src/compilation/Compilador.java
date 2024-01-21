@@ -4,23 +4,26 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import semantic.AnalisisSemantico;
 import semantic.ArbolSintactico;
-import semantic.Variable;
+import semantic.Funcion;
+import semantic.Tipo;
 import syntaxis.Syntax;
 
 public class Compilador {
-	public HashMap<String, String> variables = new HashMap<String, String>();
+	public HashMap<String, String> stringGlobales = new HashMap<String, String>();
+	public ArrayList<Funcion> funciones;
+	public HashMap<String, Tipo> tiposVariables = new HashMap<String, Tipo>();
 	private FileWriter fileWriter;
 	private int nextStackOffset = 0;
-	private Map<Variable, Integer> variableStackOffsets = new HashMap<>();
+	private HashMap<String, Integer> variableStackOffsets = new HashMap<String, Integer>();
 	private ArrayList<String> finalLabelLoops = new ArrayList<String>();
 
 	public void compilar(String source, String destination) throws Exception {
 		ArbolSintactico arbolSintactico = Syntax.parse(source);
+		this.funciones = arbolSintactico.funciones;
 		new AnalisisSemantico(arbolSintactico);
 		String basePath = System.getProperty("user.dir");
 		new File(basePath + destination).createNewFile();
@@ -37,41 +40,43 @@ public class Compilador {
 		}
 	}
 
-	public String getTipoVariable(String nombreVariable) {
-		return variables.get(nombreVariable);
+	public void addLine() {
+		this.addLine("");
 	}
 
-	public Variable getVariable(String nombre) {
-		for (Map.Entry<Variable, Integer> entry : variableStackOffsets.entrySet()) {
-			Variable variable = entry.getKey();
-			if (variable.toString().equals(nombre)) {
-				return variable;
-			}
-		}
-		return null; // Variable no encontrada
-	}
+	// public Variable getVariable(String nombre) {
+	// 	for (Map.Entry<Variable, Integer> entry : variableStackOffsets.entrySet()) {
+	// 		Variable variable = entry.getKey();
+	// 		if (variable.toString().equals(nombre)) {
+	// 			return variable;
+	// 		}
+	// 	}
+	// 	return null; // Variable no encontrada
+	// }
 
 	public int getNextStackOffset() {
 		return nextStackOffset;
 	}
 
-	public int getStackOffsetForVariable(Variable variable) {
-		return variableStackOffsets.getOrDefault(variable, 0);
+	public int getStackOffsetForVariable(String nombreVariable) {
+		return -(variableStackOffsets.get(nombreVariable) + 4);
+		// return variableStackOffsets.getOrDefault(variable, 0);
 	}
 
-	public int reserveStackSpace(int bytes) {
+	private int reserveStackSpace(int bytes) {
 		int currentOffset = nextStackOffset;
 		nextStackOffset += bytes;
 		return currentOffset;
 	}
 
-	public void assignStackOffsetForVariable(Variable variable) {
-		int offset = reserveStackSpace(4); // Ajusta según el tamaño deseado en bytes
-		variableStackOffsets.put(variable, offset);
+	public void assignStackOffsetForVariable(String nombreVariable) {
+		int offset = this.reserveStackSpace(4); // Ajusta según el tamaño deseado en bytes
+		this.variableStackOffsets.put(nombreVariable, offset);
 	}
 
-	public void addLine() {
-		this.addLine("");
+	public void clearStackOffset() {
+		this.variableStackOffsets.clear();
+		this.nextStackOffset = 0;
 	}
 
 	public void addFinalLabelLoop(String finalLabelLoop) {

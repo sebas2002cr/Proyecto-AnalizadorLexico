@@ -58,7 +58,7 @@ class Literal extends Expresion {
 			compilador.addLine("li $t0, " + this.valor);
 		}
 		if (this.tipo.nombre == Tipos.STRING) {
-			compilador.addLine("la $t0, " + compilador.variables.get(this.valor));
+			compilador.addLine("la $t0, " + compilador.stringGlobales.get(this.valor));
 		}
 		if (this.tipo.nombre == Tipos.BOOLEAN) {
 			compilador.addLine("li $t0, " + (valor.equals("true") ? 1 : 0));
@@ -75,8 +75,7 @@ class Literal extends Expresion {
 
 class Identificador extends Expresion {
 	String identificador;
-	Compilador comp;
-	String var;
+	Tipo tipo;
 
 	public Identificador(Object identificador) {
 		this.identificador = identificador.toString();
@@ -84,44 +83,39 @@ class Identificador extends Expresion {
 
 	@Override
 	public String toString() {
-		return this.comp.variables.values().toString();
+		return identificador;
+	}
+
+	@Override
+	public Tipo getTipo() {
+		return this.tipo;
 	}
 
 	@Override
 	public void compilar(Compilador compilador) {
 		// Obtener el desplazamiento para la variable
-		var = this.comp.variables.values().toString();
-		System.out.println(var);
-		int desplazamiento = getDesplazamiento(compilador, this.identificador);
-
-		// Cargar el valor desde la memoria a $t0 (o $f0 para variables de punto
-		// flotante)
-		if (getTipoVariable(compilador, this.identificador) == Tipos.FLOAT) {
+		int desplazamiento = compilador.getStackOffsetForVariable(this.identificador);
+		Tipo tipoVariable = compilador.tiposVariables.get(this.identificador);
+		this.tipo = tipoVariable;
+		// Cargar el valor desde la memoria a $t0 (o $f0 para variables de punto flotante)
+		if (tipoVariable.nombre == Tipos.FLOAT) {
 			compilador.addLine("l.s $f0, " + desplazamiento + "($fp)");
 		} else {
 			compilador.addLine("lw $t0, " + desplazamiento + "($fp)");
 		}
 	}
 
-	private int getDesplazamiento(Compilador compilador, String identificador) {
-		// Utilizar el nuevo método getVariable
-		Variable variable = compilador.getVariable(identificador);
-		if (variable != null) {
-			return compilador.getStackOffsetForVariable(variable);
-		} else {
-			// Manejar el caso en que la variable no se encuentra
-			throw new RuntimeException("Variable no encontrada: " + identificador);
-		}
-	}
-
-	private Tipos getTipoVariable(Compilador compilador, String identificador) {
-		Variable variable = compilador.getVariable(identificador);
-		if (variable != null) {
-			return variable.getTipo().nombre;
-		} else {
-			throw new RuntimeException("Variable no encontrada: " + identificador);
-		}
-	}
+	// private int getDesplazamiento(Compilador compilador) {
+	// 	return compilador.getStackOffsetForVariable(this.identificador);
+	// 	// Utilizar el nuevo método getVariable
+	// 	Variable variable = compilador.getVariable(identificador);
+	// 	if (variable != null) {
+	// 		return compilador.getStackOffsetForVariable(variable);
+	// 	} else {
+	// 		// Manejar el caso en que la variable no se encuentra
+	// 		throw new RuntimeException("Variable no encontrada: " + identificador);
+	// 	}
+	// }
 }
 
 class Read extends Expresion {
@@ -164,6 +158,7 @@ class Read extends Expresion {
 class LlamadaFuncion extends Expresion {
 	String nombre;
 	ArrayList<Expresion> argumentos;
+	Tipo tipo;
 
 	public LlamadaFuncion(String nombre, ArrayList<Expresion> argumentos) {
 		this.nombre = nombre;
@@ -176,41 +171,50 @@ class LlamadaFuncion extends Expresion {
 	}
 
 	@Override
+	public Tipo getTipo() {
+		return this.tipo;
+	}
+
+	@Override
 	public void compilar(Compilador compilador) {
-		// Reservar espacio en la pila para los argumentos
-		int offset = 0;
-		for (Expresion argumento : argumentos) {
-			argumento.compilar(compilador);
-			if (argumento.getTipo() != null && argumento.getTipo().nombre == Tipos.FLOAT) {
-				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("swc1 $f0, " + offset + "($sp)");
-				offset += 4;
-			} else {
-				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("sw $t0, " + offset + "($sp)");
-				offset += 4;
+		// Buscamos la función
+		Funcion funcionActual = null;
+		for (Funcion funcion : compilador.funciones) {
+			if(funcion.nombre.equals(this.nombre)){
+				funcionActual = funcion;
+				break;
 			}
 		}
+		this.tipo = funcionActual.tipo;
+
+		// Guardamos el registro de activación
+		compilador.addLine("subu $sp, $sp, 4 # Aparta campo en la pila para el $fp");
+		compilador.addLine("sw $fp, 0($sp) # Guarda el $fp");
 
 		// Mover fp a la posición actual de la pila
-		compilador.addLine("move $fp, $sp");
+		compilador.addLine("move $fp, $sp # Nuevo registro de activación para la función actual");
 
-		// Llamada a la función
-		compilador.addLine("jal " + nombre);
-
-		// Limpiar la pila después de la llamada
-		compilador.addLine("addu $sp, $sp, " + offset);
-
-		// Guardar el resultado si la función retorna un valor
-		if (this.getTipo() != null && this.getTipo().nombre != Tipos.NULL) {
-			if (this.getTipo().nombre == Tipos.FLOAT) {
-				compilador.addLine("subu $sp, $sp, 4");
+		// Reservar espacio en la pila para los argumentos
+		int offset = 0;
+		for (int i=0; i<argumentos.size(); i++) {
+			Expresion argumento = this.argumentos.get(i);
+			argumento.compilar(compilador);
+			compilador.addLine("subu $sp, $sp, 4");
+			if (argumento.getTipo().nombre == Tipos.FLOAT) {
 				compilador.addLine("swc1 $f0, 0($sp)");
 			} else {
-				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("sw $v0, 0($sp)");
+				compilador.addLine("sw $t0, 0($sp)");
 			}
+			offset += 4;
 		}
+
+		// Llamada a la función
+		compilador.addLine("jal function_" + nombre);
+
+		// Limpiar la pila después de la llamada
+		compilador.addLine("addu $sp, $sp, " + offset + " # Libera los parámetros de la pila");
+		compilador.addLine("lw $fp, 0($sp) # Restaura el $fp anterior");
+		compilador.addLine("addu $sp, $sp, 4 # Libera el fp de la pila");
 	}
 
 }

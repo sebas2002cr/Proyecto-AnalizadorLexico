@@ -11,10 +11,11 @@ public class Funcion implements Compilable {
 	BloqueCodigo bloqueCodigo;
 
 	public Funcion(
-			Object nombre,
-			Object tipo,
-			ArrayList<Variable> parametros,
-			BloqueCodigo bloqueCodigo) {
+		Object nombre,
+		Object tipo,
+		ArrayList<Variable> parametros,
+		BloqueCodigo bloqueCodigo
+	) {
 		this.nombre = nombre.toString();
 		this.tipo = Tipo.fromString(tipo.toString());
 		this.parametros = parametros;
@@ -34,6 +35,11 @@ public class Funcion implements Compilable {
 		else
 			compilador.addLine("function_" + this.nombre + ":");
 
+		for (Variable parametro : this.parametros) {
+			compilador.assignStackOffsetForVariable(parametro.nombre);
+			compilador.tiposVariables.put(parametro.nombre, parametro.tipo);
+		}
+
 		this.bloqueCodigo.compilar(compilador);
 
 		compilador.addLine();
@@ -45,9 +51,10 @@ public class Funcion implements Compilable {
 			""");
 		} else {
 			compilador.addLine("# Salir funcion " + this.nombre);
-			// La limpieza de la pila
-			compilador.addLine("addu $sp, $sp, " + (this.tipo.nombre == Tipos.FLOAT ? 4 : 8));
 			compilador.addLine("jr $ra");
 		}
+
+		compilador.clearStackOffset();
+		compilador.tiposVariables.clear();
 	}
 }

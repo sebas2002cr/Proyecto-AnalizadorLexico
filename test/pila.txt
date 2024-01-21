@@ -1,0 +1,28 @@
+
+function main() {
+	prueba() |
+	print("prueba en MAIN\n") |
+	print(prueba()) |
+	print(cadena(11, 12)) |
+}
+
+function prueba:int() {
+	print("prueba en prueba") |
+	return 1 |
+}
+
+function cadena:string(numero1:int, numero2:int) {
+	print("\nnumero: ") |
+	print(numero1) |
+	local variable:string := "variable" |
+	print("\n") |
+	print(variable) |
+	variable := "asignacion" |
+	print("\n") |
+	print(variable) |
+	local var1:string, var2:string |
+	var1 := "var1" |
+	print("\n") |
+	print(var1) |
+	return "\nfunción de string" |
+}

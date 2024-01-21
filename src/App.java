@@ -20,7 +20,7 @@ public class App {
                     Syntax.parse("/test/semantica/semantica.txt");
                 }
             } else {
-                new Compilador().compilar("/test/codigo.txt", "/test/compilado.asm");
+                new Compilador().compilar("/test/pila.txt", "/test/compilado.asm");
             }
         } catch (Exception e) {
             // Captura y maneja cualquier excepción que pueda ocurrir durante la ejecución.

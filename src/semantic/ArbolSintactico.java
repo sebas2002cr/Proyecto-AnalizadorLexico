@@ -5,7 +5,7 @@ import compilation.Compilable;
 import compilation.Compilador;
 
 public class ArbolSintactico implements Compilable {
-	ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+	public ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 	private ArrayList<String> literalesString = new ArrayList<String>();
 	private ArrayList<ArrayList<Variable>> matrizVariables = new ArrayList<ArrayList<Variable>>();
 	private ArrayList<BloqueCodigo> bloquesCodigo = new ArrayList<BloqueCodigo>();
@@ -138,8 +138,8 @@ public class ArbolSintactico implements Compilable {
 		compilador.addLine("resultado_read: .space 100");
 		for (String literalString : this.literalesString) {
 			String nombreVariable = "string_" + compilador.randomString();
-			if(compilador.variables.get(literalString) == null) {
-				compilador.variables.put(literalString, nombreVariable);
+			if(compilador.stringGlobales.get(literalString) == null) {
+				compilador.stringGlobales.put(literalString, nombreVariable);
 				compilador.addLine(nombreVariable + ": .asciiz " + literalString);
 			}
 		}
@@ -149,66 +149,26 @@ public class ArbolSintactico implements Compilable {
 			funcion.compilar(compilador);
 		}
 		compilador.addLine();
-		compilador.addLine("""
-		imprimir_salto_linea:
-			li, $v0, 4
-			la $a0, salto_linea
-			syscall
-			jr $ra
-
-		potencia:
-			# $t1: base
-			# $t0: exponente
-			# $t0 -> resultado
-			li $t2, 1
-			multiplicar_potencia:
-       			beq $t0, $zero, salir_potencia
-        		mul $t2, $t2, $t1
-        		addi $t0, $t0, -1
-        		j multiplicar_potencia
-			salir_potencia:
-				move $t0, $t2
-				jr $ra""");
-	}
-}
-
-enum Tipos {
-	INT,
-	FLOAT,
-	STRING,
-	CHAR,
-	LIST_INT,
-	LIST_CHAR,
-	BOOLEAN,
-	NULL
-}
-
-class Tipo {
-	Tipos nombre;
-
-	Tipo(Tipos nombre) {
-		this.nombre = nombre;
-	}
-
-	static Tipo fromString(String tipoString) {
-		try {
-			return new Tipo(Tipos.valueOf(tipoString.toUpperCase()));
-		} catch (Exception e) {
-			int index = tipoString.indexOf("[");
-			Tipos tipoLista = Tipos.valueOf(tipoString.substring(0, index).toUpperCase());
-			return new Lista(
-				tipoLista == Tipos.CHAR ? Tipos.LIST_CHAR : tipoLista == Tipos.INT ? Tipos.LIST_INT : Tipos.NULL,
-				Integer.parseInt(tipoString.substring(index + 1, tipoString.length() - 1).toUpperCase())
-			);
-		}
-	}
-}
-
-class Lista extends Tipo {
-	int tamanno;
-
-	Lista(Tipos nombre, int tamanno) {
-		super(nombre);
-		this.tamanno = tamanno;
+		compilador.addLine(
+		"imprimir_salto_linea:" + "\n" +
+		"	li, $v0, 4" + "\n" +
+		"	la $a0, salto_linea" + "\n" +
+		"	syscall" + "\n" +
+		"	jr $ra" + "\n" +
+		"\n" +
+		"potencia:" + "\n" +
+		"	# $t1: base" + "\n" +
+		"	# $t0: exponente" + "\n" +
+		"	# $t0 -> resultado" + "\n" +
+		"	li $t2, 1" + "\n" +
+		"	multiplicar_potencia:" + "\n" +
+		"	beq $t0, $zero, salir_potencia" + "\n" +
+        "		mul $t2, $t2, $t1" + "\n" +
+        "		addi $t0, $t0, -1" + "\n" +
+        "		j multiplicar_potencia" + "\n" +
+		"	salir_potencia:" + "\n" +
+		"		move $t0, $t2" + "\n" +
+		"		jr $ra"
+		);
 	}
 }

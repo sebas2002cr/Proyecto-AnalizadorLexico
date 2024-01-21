@@ -110,19 +110,22 @@ class DeclaracionesVariables extends LineaCodigo {
 	@Override
 	public void compilar(Compilador compilador) {
 		for (Variable variable : declaraciones) {
+			compilador.tiposVariables.put(variable.nombre, variable.tipo);
 			// Asignar desplazamiento en la pila a la variable
-			int desplazamiento = compilador.reserveStackSpace(4); // Ajusta según el tamaño deseado en bytes
-			variable.setDesplazamiento(desplazamiento);
+			// int desplazamiento = compilador.reserveStackSpace(4); // Ajusta según el tamaño deseado en bytes
+			// variable.setDesplazamiento(desplazamiento);
 
 			// Agregar comentarios y código MIPS según el tipo de variable
 			compilador.addLine("# Declaración de variable: " + variable.nombre + ", Tipo: " + variable.tipo.nombre);
+			compilador.assignStackOffsetForVariable(variable.nombre);
+			compilador.tiposVariables.put(variable.nombre, variable.tipo);
 
 			if (variable.tipo.nombre == Tipos.FLOAT) {
 				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("s.s $f0, " + desplazamiento + "($sp)");
+				compilador.addLine("s.s $f0, 0 ($sp)");
 			} else {
 				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("sw $t0, " + desplazamiento + "($sp)");
+				compilador.addLine("sw $t0, 0($sp)");
 			}
 		}
 	}
@@ -139,31 +142,34 @@ class DeclaracionAsignacionVariable extends LineaCodigo {
 
 	@Override
 	public void compilar(Compilador compilador) {
-		compilador.addLine("# Declaración y asignación de variable: " + declaracion.nombre +
-				", Tipo: " + declaracion.tipo.nombre);
+		compilador.tiposVariables.put(this.declaracion.nombre, this.declaracion.tipo);
+
+		compilador.addLine(
+			"# Declaración y asignación de variable: " + declaracion.nombre +
+			", Tipo: " + declaracion.tipo.nombre
+		);
 
 		// Compilar la asignación de la variable
 		asignacion.compilar(compilador);
 
 		// Obtener el desplazamiento de la pila para la variable
-		int desplazamiento = declaracion.getDesplazamiento();
+		// int desplazamiento = declaracion.getDesplazamiento();
+
+		compilador.assignStackOffsetForVariable(declaracion.nombre);
+		compilador.tiposVariables.put(declaracion.nombre, declaracion.tipo);
 
 		// Utilizar el compilador para almacenar el valor en la dirección de la variable
 		// en la pila
-		if (declaracion.tipo.nombre == Tipos.STRING) {
-			// La cadena ya debería estar en $t0
-			compilador.addLine("sw $t0, " + desplazamiento + "($sp)"); // Almacenar la cadena en la pila
-		} else if (declaracion.tipo.nombre == Tipos.FLOAT) {
+		compilador.addLine("subu $sp, $sp, 4");
+		if (declaracion.tipo.nombre == Tipos.FLOAT) {
 			// Almacenar el valor en la dirección de la variable en la pila
-			compilador.addLine("subu $sp, $sp, 4");
-			compilador.addLine("s.s $f0, " + desplazamiento + "($sp)"); // Almacenar el valor flotante
+			compilador.addLine("s.s $f0, 0($sp)"); // Almacenar el valor flotante
 		} else {
-			// Tratar como otros tipos de variables (INT, CHAR, BOOLEAN, etc.)
-			compilador.addLine("sw $t0, " + desplazamiento + "($sp)"); // Almacenar el valor en la pila
+			// Tratar como otros tipos de variables (INT, CHAR, BOOLEAN, STRING, etc.)
+			compilador.addLine("sw $t0, 0($sp)"); // Almacenar el valor en la pila
 		}
-
 		// Ajustar el puntero de la pila después de almacenar el valor
-		compilador.addLine("addu $sp, $sp, 4");
+		// compilador.addLine("addu $sp, $sp, 4");
 	}
 }
 
@@ -179,14 +185,15 @@ class AsignacionVariable extends LineaCodigo {
 	@Override
 	public void compilar(Compilador compilador) {
 		compilador.addLine("# Asignación de variable: " + nombreVariable);
-
 		// Compilar la asignación de la variable
 		asignacion.compilar(compilador);
 
-		// Utilizar el compilador para almacenar el valor en la dirección de la variable
-		// en la pila
+		// Utilizar el compilador para almacenar el valor en la dirección de la variable en la pila
 		compilador.addLine(
-				"sw $t0, " + compilador.getStackOffsetForVariable(new Variable(nombreVariable, null)) + "($sp)");
+			"sw $t0, " +
+			compilador.getStackOffsetForVariable(nombreVariable) +
+			"($fp)"
+		);
 	}
 }
 
@@ -199,19 +206,22 @@ class Return extends LineaCodigo {
 
 	@Override
 	public void compilar(Compilador compilador) {
-		if (valor != null) {
-			valor.compilar(compilador);
+		this.valor.compilar(compilador);
+		compilador.addLine("# Return");
+		compilador.addLine("jr $ra");
+		// if (valor != null) {
+		// 	valor.compilar(compilador);
 
-			// Almacenar el resultado en $t0 o $f0
-			if (valor.getTipo().nombre == Tipos.FLOAT) {
-				compilador.addLine("mov.s $f0, $f0");
-			} else {
-				compilador.addLine("move $t0, $v0");
-			}
-		}
+		// 	// Almacenar el resultado en $t0 o $f0
+		// 	if (valor.getTipo().nombre == Tipos.FLOAT) {
+		// 		compilador.addLine("mov.s $f0, $f0");
+		// 	} else {
+		// 		compilador.addLine("move $t0, $v0");
+		// 	}
+		// }
 
-		// Limpiar la pila después de la llamada
-		compilador.addLine("addu $sp, $sp, " + (valor.getTipo().nombre == Tipos.FLOAT ? 4 : 8));
+		// // Limpiar la pila después de la llamada
+		// compilador.addLine("addu $sp, $sp, " + (valor.getTipo().nombre == Tipos.FLOAT ? 4 : 8));
 	}
 }
 
@@ -257,6 +267,7 @@ class For extends LineaCodigo {
 		}
 
 		String idInicioBucle = compilador.randomString();
+		compilador.addFinalLabelLoop("for_fin_" + idInicioBucle);
 		compilador.addLine("for_inicio_" + idInicioBucle + ":");
 		finalizacion.compilar(compilador);
 		compilador.addLine("beq $t0, $zero, for_fin_" + idInicioBucle);
@@ -314,6 +325,6 @@ class Print extends LineaCodigo {
 			compilador.addLine("li $v0, 1");
 		}
 		compilador.addLine("syscall");
-		compilador.addLine("jal imprimir_salto_linea");
+		compilador.addLine("# jal imprimir_salto_linea");
 	}
 }
