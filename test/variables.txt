@@ -1,0 +1,47 @@
+
+function main() {
+	local var1:int := 1 |
+	print("\n") |
+	print(var1) |
+	local var2:int := 2 |
+	print("\n") |
+	print(var2) |
+	local var3:int := 3 |
+	print("\n") |
+	print(var3) |
+	local var4:int := 4 |
+	print("\n") |
+	print(var4) |
+	local var5:int := 5 |
+	print("\n") |
+	print(var5) |
+	local var6:int := 6 |
+	print("\n") |
+	print(var6) |
+	local var7:int := 7 |
+	print("\n") |
+	print(var7) |
+	local var8:int := 8 |
+	print("\n") |
+	print(var8) |
+	local var9:int := 9 |
+	print("\n") |
+	print(var9) |
+	local var10:int := 10 |
+	print("\n") |
+	print(var10) |
+	for(num:int := 0, num<10, ++num) {
+		print(num) |
+		print(" - ") |
+	}
+	local caracter:char := funcion(34) |
+	print("\n") |
+	print(caracter) |
+}
+
+function funcion:char(parametro:int) {
+	print(parametro) |
+	print("\n") |
+	print("adentro de función") |
+	return 'r' |
+}
