@@ -43,17 +43,24 @@ public class LineaCodigo implements Compilable {
 		int separador = asigString.indexOf("|");
 		String tipoAsignacion = asigString.substring(0, separador);
 		if (tipoAsignacion.equals("asignar_variable_declarada")) {
+			arbol.variables(true);
 			return new For(
-					new AsignacionVariable(asigString.substring(separador + 1), expresiones.get(0)),
-					expresiones.get(1),
-					expresiones.get(2),
-					bloqueCodigo);
-		}
-		return new For(
-				new DeclaracionAsignacionVariable(arbol.variables(true).get(0), expresiones.get(0)),
+				new AsignacionVariable(asigString.substring(separador + 1),
+				expresiones.get(0)),
 				expresiones.get(1),
 				expresiones.get(2),
-				bloqueCodigo);
+				bloqueCodigo
+			);
+		}
+		return new For(
+			new DeclaracionAsignacionVariable(
+				arbol.variables(true).get(0),
+				expresiones.get(0)
+			),
+			expresiones.get(1),
+			expresiones.get(2),
+			bloqueCodigo
+		);
 	}
 
 	public static DoUntil doUntil(BloqueCodigo bloqueCodigo, ArrayList<Expresion> expresiones) {

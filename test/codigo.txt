@@ -18,6 +18,8 @@ function main() {
 	print(indice(2)) |
 	print("\n") |
 	prueba() |
+	print("\n") |
+	ciclo(2) |
 }
 
 function cuadrado:int(numero:int) {
@@ -52,4 +54,19 @@ function prueba:char() {
 		}
 	}
 	return '1' |
+}
+
+function ciclo:int(fin:int) {
+	local j:int := 0 |
+	for(i:int:=0, i<fin, ++i) {
+		@@do {
+		@@	print('.') |
+		@@	++j |
+		@@} until(j = fin) |
+		@@j := 0 |
+		for(j:=0, j<fin, ++j){
+			print('.') |
+		}
+	}
+	return 0 |
 }

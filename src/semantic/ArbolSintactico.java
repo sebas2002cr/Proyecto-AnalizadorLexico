@@ -7,7 +7,7 @@ import compilation.Compilador;
 public class ArbolSintactico implements Compilable {
 	public ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 	private ArrayList<String> literalesString = new ArrayList<String>();
-	private ArrayList<ArrayList<Variable>> matrizVariables = new ArrayList<ArrayList<Variable>>();
+	public ArrayList<ArrayList<Variable>> matrizVariables = new ArrayList<ArrayList<Variable>>();
 	private ArrayList<BloqueCodigo> bloquesCodigo = new ArrayList<BloqueCodigo>();
 	private ArrayList<ArrayList<Expresion>> matrizExpresiones = new ArrayList<ArrayList<Expresion>>();
 	private ArrayList<Condicional> condicionales = new ArrayList<Condicional>();

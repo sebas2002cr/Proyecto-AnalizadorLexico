@@ -35,7 +35,6 @@ public class ListaTablasSimbolos {
 
 	public void guardar(String path) throws Exception {
 		String filePath = System.getProperty("user.dir") + "/" + path;
-		// System.out.println(filePath);
 		new File(filePath).createNewFile();
 		FileWriter writer = new FileWriter(filePath);
 		for (TablaSimbolos tabla : tablas) {
@@ -99,7 +98,6 @@ class ParametroSyntax extends Simbolo {
 	private String lexema, nombre, tipo;
 
 	public ParametroSyntax(String lexema, Object tupla){
-		// System.out.println(tupla.getClass().getName());
 		this.setLexema(lexema);
 	}
 
