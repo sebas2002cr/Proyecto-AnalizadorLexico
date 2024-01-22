@@ -2,66 +2,102 @@
 function main() {
 	123 |
 	print(1092) |
+	print("\n") |
 	print("imprimir string") |
+	print("\n") |
 	local var:string := "hola" |
 	print(var) |
+	print("\n") |
 	local num:int |
 	local fr:boolean := true |
-	print("\n") |
 	print(fr) |
+	print("\n") |
 	print(true) |
+	print("\n") |
 	print('a') |
+	print("\n") |
 	print(3.14) |
+	print("\n") |
 	@@ print("escribe string") |
 	@@ print(read:string()) |
 	@@ print("escribe entero") |
 	@@ print(read:int()) |
 	@@ print("escribe flotante") |
 	@@ print(read:float()) |
-	print(3 + (2 + 3) * 4) | @@ Faltan operaciones con flotantes
+	print(3 + (2 + 3) * 4) |
+	print("\n") |
 	print(14 / 2) |
+	print("\n") |
 	print(++1) |
+	print("\n") |
 	print(--1) |
+	print("\n") |
 	print(-(1)) |
+	print("\n") |
 	print(1 <> 2) |
+	print("\n") |
 	print(1 = 2) |
+	print("\n") |
 	print(1 < 1) |
+	print("\n") |
 	print(1 > 1) |
+	print("\n") |
 	print(1 <= 1) |
+	print("\n") |
 	print(0 <= 1) |
+	print("\n") |
 	print(2 <= 1) |
+	print("\n") |
 	print(1 >= 1) |
+	print("\n") |
 	print(0 >= 1) |
+	print("\n") |
 	print(2 >= 1) |
+	print("\n") |
 	print(0+1+2+3+4 <= 5+6+7+8+9) |
+	print("\n") |
 	print(true # true) |
+	print("\n") |
 	print(2 ** 3) |
+	print("\n") |
 	print(10 ** 4) |
+	print("\n") |
 	if(true = true) {
 		print("adentro del if") |
+		print("\n") |
 		if(1 <> 1) {
 			print("adentro de otro if") |
+			print("\n") |
 		}
 	}
 	if(true = false) {
 		print("not if") |
+		print("\n") |
 	} elif (1 = 0) {
 		print("no elif") |
+		print("\n") |
 	} elif (1 = 0) {
 		print("adentro de elif") |
+		print("\n") |
 	} else {
 		print("else") |
+		print("\n") |
 	}
 	do {
 		print("dountil") |
+		print("\n") |
 	} until (true = true) |
 	print("antes ciclo") |
+	print("\n") |
 	do {
 		break |
 		print("en ciclo") |
+		print("\n") |
 	} until (true = true) |
 	print("después ciclo") |
+	print("\n") |
 	local numero:int := 20 |
 	++numero |
 	print(++numero) |
+	print("\n") |
 }

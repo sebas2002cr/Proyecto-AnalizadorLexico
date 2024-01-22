@@ -156,7 +156,7 @@ public class ArbolSintactico implements Compilable {
 		"	syscall" + "\n" +
 		"	jr $ra" + "\n" +
 		"\n" +
-		"potencia:" + "\n" +
+		"potencia_entera:" + "\n" +
 		"	# $t1: base" + "\n" +
 		"	# $t0: exponente" + "\n" +
 		"	# $t0 -> resultado" + "\n" +
@@ -168,7 +168,24 @@ public class ArbolSintactico implements Compilable {
         "		j multiplicar_potencia" + "\n" +
 		"	salir_potencia:" + "\n" +
 		"		move $t0, $t2" + "\n" +
-		"		jr $ra"
+		"		jr $ra" + "\n" +
+		"\n" +
+		"potencia_flotante:" + "\n" +
+		"	# $f1: base" + "\n" +
+		"	# $f0: exponente" + "\n" +
+		"	# $f0 -> resultado" + "\n" +
+		"	li.s $f2, 1.0" + "\n" +
+		"	li.s $f30, 0.0" + "\n" +
+		"	li.s $f31, 1.0" + "\n" +
+		"	loop_potencia_float:" + "\n" +
+		"       c.eq.s $f0, $f30" + "\n" +
+		"		bc1t fin_potencia_float" + "\n" +
+		"		mul.s $f2, $f2, $f1" + "\n" +
+		"		sub.s $f0, $f0, $f31" + "\n" +
+		"		j loop_potencia_float" + "\n" +
+		"	fin_potencia_float:" + "\n" +
+		"       mov.s $f0, $f2" + "\n" +
+		"       jr $ra"
 		);
 	}
 }

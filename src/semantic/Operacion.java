@@ -155,21 +155,38 @@ public class Operacion extends Expresion {
 			if(this.izquierda.valor != null) {
 				this.izquierda.compilar(compilador);
 				compilador.addLine("subu $sp, $sp, 4");
-				compilador.addLine("sw $t0, 0($sp)");
+				if(this.izquierda.getTipo().nombre == Tipos.FLOAT) {
+					compilador.addLine("swc1 $f0, 0($sp)");
+				} else {
+					compilador.addLine("sw $t0, 0($sp)");
+				}
 			}
 			this.derecha.compilar(compilador);
 			// Si es una operación unaria
 			compilador.addLine("# " + this.operando.tipo);
 			if(this.operando.prioridad() == 4) {
 				if(this.operando.tipo == Operandos.INCREMENTO) {
-					compilador.addLine("addi $t0, $t0, 1");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("add.s $f0, $f0, 1");
+					} else {
+						compilador.addLine("addi $t0, $t0, 1");
+					}
 				}
 				if(this.operando.tipo == Operandos.DECREMENTO) {
-					compilador.addLine("addi $t0, $t0, -1");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("li.s $f1, 1.0");
+						compilador.addLine("sub.s $f0, $f0, $f1");
+					} else {
+						compilador.addLine("addi $t0, $t0, -1");
+					}
 				}
 				if(this.operando.tipo == Operandos.NEGATIVO) {
-					compilador.addLine("li $t1, -1");
-					compilador.addLine("mul $t0, $t0, $t1");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("neg.s $f0, $f0");
+					} else {
+						compilador.addLine("li $t1, -1");
+						compilador.addLine("mul $t0, $t0, $t1");
+					}
 				}
 				if(this.operando.tipo == Operandos.NOT) {
 					compilador.addLine("xori $t0, $t0, 1");
@@ -178,57 +195,147 @@ public class Operacion extends Expresion {
 					if(
 						this.operando.tipo == Operandos.INCREMENTO ||
 						this.operando.tipo == Operandos.DECREMENTO
-					) compilador.addLine(
-						"sw $t0, " +
-						compilador.getStackOffsetForVariable(((Identificador)this.derecha.valor).identificador) +
-						"($fp)"
-					);
+					) {
+						if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+							compilador.addLine("swc1 $f0, " +
+								compilador.getStackOffsetForVariable(
+									((Identificador)this.derecha.valor)
+								.identificador) +
+							"($fp)");
+						} else {
+							compilador.addLine("sw $t0, " +
+								compilador.getStackOffsetForVariable(
+									((Identificador)this.derecha.valor)
+								.identificador) +
+							"($fp)");
+						}
+					}
 				}
 			} else {
 				// Sacamos el valor de izquierda de la pila
-				compilador.addLine("lw $t1, 0($sp)");
-				compilador.addLine("addiu $sp, $sp, 4");
+				if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+					compilador.addLine("l.s $f1, 0($sp)");
+					compilador.addLine("addiu $sp, $sp, 4");
+				} else {
+					compilador.addLine("lw $t1, 0($sp)");
+					compilador.addLine("addiu $sp, $sp, 4");
+				}
 				if(this.operando.tipo == Operandos.SUMA) {
-					compilador.addLine("add $t0, $t0, $t1");
+					if(this.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("add.s $f0, $f1, $f0");
+					} else {
+						compilador.addLine("add $t0, $t1, $t0");
+					}
 				}
 				if(this.operando.tipo == Operandos.RESTA) {
-					compilador.addLine("sub $t0, $t0, $t1");
+					if(this.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("sub.s $f0, $f1, $f0");
+					} else {
+						compilador.addLine("sub $t0, $t1, $t0");
+					}
 				}
 				if(this.operando.tipo == Operandos.MULTIPLICACION) {
-					compilador.addLine("mul $t0, $t0, $t1");
+					if(this.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("mul.s $f0, $f1, $f0");
+					} else {
+						compilador.addLine("mul $t0, $t1, $t0");
+					}
 				}
 				if(this.operando.tipo == Operandos.DIVISION) {
-					compilador.addLine("div $t1, $t0");
-					compilador.addLine("mflo $t0");
+					if(this.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("div.s $f0, $f1, $f0");
+					} else {
+						compilador.addLine("div $t1, $t0");
+						compilador.addLine("mflo $t0");
+					}
 				}
 				if(this.operando.tipo == Operandos.POTENCIA) {
-					compilador.addLine("jal potencia");
+					if(this.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("jal potencia_flotante");
+					} else {
+						compilador.addLine("jal potencia_entera");
+					}
 				}
 				if(this.operando.tipo == Operandos.MODULO) {
-					compilador.addLine("div $t1, $t0");
-					compilador.addLine("mfhi $t0");
+					if(this.getTipo().nombre == Tipos.FLOAT) {
+						compilador.addLine("div.s $f2, $f1, $f0");
+						compilador.addLine("floor.w.s $f3, $f2");
+						compilador.addLine("mul.s $f4, $f3, $f0");
+						compilador.addLine("sub.s $f0, $f1, $f4");
+					} else {
+						compilador.addLine("div $t1, $t0");
+						compilador.addLine("mfhi $t0");
+					}
 				}
 				if(this.operando.tipo == Operandos.DISTINTO) {
-					this.compilarComparacion(compilador, "distinto", "bne");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						String idEtiqueta = compilador.randomString();
+						compilador.addLine("c.eq.s $f1, $f0");
+						compilador.addLine("bc1f distinto_" + idEtiqueta);
+						compilador.addLine("li $t0, 0");
+						compilador.addLine("distinto_" + idEtiqueta + ": li $t0, 1");
+					} else {
+						this.compilarComparacion(compilador, "distinto", "bne");
+					}
 				}
 				if(this.operando.tipo == Operandos.IGUAL) {
-					this.compilarComparacion(compilador, "igual", "beq");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						String idEtiqueta = compilador.randomString();
+						compilador.addLine("c.eq.s $f1, $f0");
+						compilador.addLine("bc1t igual_" + idEtiqueta);
+						compilador.addLine("li $t0, 0");
+						compilador.addLine("igual_" + idEtiqueta + ": li $t0, 1");
+					} else {
+						this.compilarComparacion(compilador, "igual", "beq");
+					}
 				}
 				if(this.operando.tipo == Operandos.MENOR) {
-					compilador.addLine("slt $t0, $t1, $t0");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						String idEtiqueta = compilador.randomString();
+						compilador.addLine("c.lt.s $f1, $f0");
+						compilador.addLine("bc1t menor_" + idEtiqueta);
+						compilador.addLine("li $t0, 0");
+						compilador.addLine("menor_" + idEtiqueta + ": li $t0, 1");
+					} else {
+						compilador.addLine("slt $t0, $t1, $t0");
+					}
 				}
 				if(this.operando.tipo == Operandos.MAYOR) {
-					compilador.addLine("slt $t0, $t0, $t1");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						String idEtiqueta = compilador.randomString();
+						compilador.addLine("c.lt.s $f0, $f1");
+						compilador.addLine("bc1t mayor_" + idEtiqueta);
+						compilador.addLine("li $t0, 0");
+						compilador.addLine("mayor_" + idEtiqueta + ": li $t0, 1");
+					} else {
+						compilador.addLine("slt $t0, $t0, $t1");
+					}
 				}
 				if(this.operando.tipo == Operandos.MENOR_IGUAL) {
-					compilador.addLine("slt $t0, $t0, $t1");
-					compilador.addLine("li $t1, 0");
-					this.compilarComparacion(compilador, "menor_igual", "beq");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						String idEtiqueta = compilador.randomString();
+						compilador.addLine("c.lt.s $f0, $f1");
+						compilador.addLine("bc1t menor_igual_" + idEtiqueta);
+						compilador.addLine("li $t0, 1");
+						compilador.addLine("menor_igual_" + idEtiqueta + ": li $t0, 0");
+					} else {
+						compilador.addLine("slt $t0, $t0, $t1");
+						compilador.addLine("li $t1, 0");
+						this.compilarComparacion(compilador, "menor_igual", "beq");
+					}
 				}
 				if(this.operando.tipo == Operandos.MAYOR_IGUAL) {
-					compilador.addLine("slt $t0, $t1, $t0");
-					compilador.addLine("li $t1, 0");
-					this.compilarComparacion(compilador, "mayor_igual", "beq");
+					if(this.derecha.getTipo().nombre == Tipos.FLOAT) {
+						String idEtiqueta = compilador.randomString();
+						compilador.addLine("c.lt.s $f1, $f0");
+						compilador.addLine("bc1t mayor_igual_" + idEtiqueta);
+						compilador.addLine("li $t0, 1");
+						compilador.addLine("mayor_igual_" + idEtiqueta + ": li $t0, 0");
+					} else {
+						compilador.addLine("slt $t0, $t1, $t0");
+						compilador.addLine("li $t1, 0");
+						this.compilarComparacion(compilador, "mayor_igual", "beq");
+					}
 				}
 				if(this.operando.tipo == Operandos.AND) {
 					compilador.addLine("and $t0, $t0, $t1");

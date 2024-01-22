@@ -1,0 +1,22 @@
+function main() {
+	print(1.23) |
+	print("\n") |
+	print(1.123 + 3.45) |
+	local flotante:float := 3.21 |
+	--flotante |
+	print("\n") |
+	print(flotante) |
+	print("\n") |
+	print(-flotante) |
+	print("\n") |
+	print(flotante >= 3.22) |
+	print(flotante <= 3.22) |
+	print(2.3 = 2.3) |
+	print(2.3 <> 2.3) |
+	print("\n") |
+	print(pi() + 1.1) |
+}
+
+function pi:float() {
+	return 3.14 |
+}

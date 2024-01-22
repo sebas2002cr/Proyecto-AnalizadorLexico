@@ -22,6 +22,10 @@ public class Compilador {
 	private HashMap<String, Integer> variableStackOffsets = new HashMap<String, Integer>();
 	private ArrayList<String> finalLabelLoops = new ArrayList<String>();
 
+	public Compilador() {
+		stringGlobales.put("\n", "salto_linea");
+	}
+
 	public void compilar(String source, String destination) throws Exception {
 		ArbolSintactico arbolSintactico = Syntax.parse(source);
 		this.funciones = arbolSintactico.funciones;
