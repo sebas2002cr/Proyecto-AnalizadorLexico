@@ -2,6 +2,6 @@ a. Compiladores e Interpretes Grupo 60
 b. Verano 2023
 c. Sebastian Obando Paniagua y Rolando Mora Cordero
 d. 2020065195 (Sebastian) y 2017013792 (Rolando)
-e. Proyecto #1
-f. Sábado 16 de Diciembre del 2023
+e. Proyecto #3
+f. Domingo 21 de Enero del 2024
 g. Estatus de la entrega : Muy Buena
