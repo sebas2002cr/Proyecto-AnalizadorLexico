@@ -175,8 +175,6 @@ public class Operacion extends Expresion {
 						compilador.addLine("add.s $f0, $f1, 1");
 						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
-						compilador.addLine("lw $t1, 0($sp)");
-						compilador.addLine("addiu $sp, $sp, 4");
 						compilador.addLine("addi $t0, $t1, 1");
 					}
 				}
@@ -186,8 +184,6 @@ public class Operacion extends Expresion {
 						compilador.addLine("sub.s $f0, $f1, 1");
 						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
-						compilador.addLine("lw $t1, 0($sp)");
-						compilador.addLine("addiu $sp, $sp, 4");
 						compilador.addLine("addi $t0, $t1, -1");
 					}
 				}
@@ -197,15 +193,11 @@ public class Operacion extends Expresion {
 						compilador.addLine("neg.s $f0, $f1");
 						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
-						compilador.addLine("lw $t1, 0($sp)");
-						compilador.addLine("addiu $sp, $sp, 4");
 						compilador.addLine("li $t2, -1");
 						compilador.addLine("mul $t0, $t1, $t2");
 					}
 				}
 				if (this.operando.tipo == Operandos.NOT) {
-					compilador.addLine("lw $t1, 0($sp)");
-					compilador.addLine("addiu $sp, $sp, 4");
 					compilador.addLine("xori $t0, $t1, 1");
 				}
 				if (this.derecha.valor.getClass() == Identificador.class) {
@@ -233,8 +225,6 @@ public class Operacion extends Expresion {
 						compilador.addLine("add.s $f0, $f0, $f1");
 						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
-						compilador.addLine("lw $t1, 0($sp)");
-						compilador.addLine("addiu $sp, $sp, 4");
 						compilador.addLine("add $t0, $t0, $t1");
 					}
 				}
@@ -243,8 +233,6 @@ public class Operacion extends Expresion {
 						compilador.addLine("sub.s $f0, $f1, $f0");
 						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
-						compilador.addLine("lw $t1, 0($sp)");
-						compilador.addLine("addiu $sp, $sp, 4");
 						compilador.addLine("sub $t0, $t1, $t0");
 					}
 				}
@@ -253,8 +241,6 @@ public class Operacion extends Expresion {
 						compilador.addLine("mul.s $f0, $f0, $f1");
 						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
-						compilador.addLine("lw $t1, 0($sp)");
-						compilador.addLine("addiu $sp, $sp, 4");
 						compilador.addLine("mul $t0, $t0, $t1");
 					}
 				}
@@ -264,8 +250,6 @@ public class Operacion extends Expresion {
 						compilador.addLine("div.s $f0, $f1, $f0");
 						compilador.addLine("swc1 $f0, 0($sp)");
 					} else {
-						compilador.addLine("lw $t1, 0($sp)");
-						compilador.addLine("addiu $sp, $sp, 4");
 						compilador.addLine("div $t1, $t0");
 						compilador.addLine("mflo $t0");
 					}
