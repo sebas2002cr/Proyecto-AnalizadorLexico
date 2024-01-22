@@ -20,6 +20,8 @@ function main() {
 	prueba() |
 	print("\n") |
 	ciclo(2) |
+	print("\n") |
+	print((1 > 2) # (2 > 1)) |
 }
 
 function cuadrado:int(numero:int) {
@@ -68,5 +70,6 @@ function ciclo:int(fin:int) {
 			print('.') |
 		}
 	}
+	local lista:int[10] |
 	return 0 |
 }

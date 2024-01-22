@@ -18,6 +18,8 @@ public class App {
                 }
                 if(args[0].equals("-p")) {
                     Syntax.parse("/test/semantica/semantica.txt");
+                } else {
+                    new Compilador().compilar(args[0], args[1]);
                 }
             } else {
                 new Compilador().compilar("/test/codigo.txt", "/test/compilado.asm");

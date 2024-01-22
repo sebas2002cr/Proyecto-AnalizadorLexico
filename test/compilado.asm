@@ -1,10 +1,10 @@
 .data
 salto_linea: .asciiz "\n"
 resultado_read: .space 100
-string_tqoqantugn: .asciiz "\n"
-string_etksfqwahz: .asciiz "es 0"
-string_xhsidcuhoc: .asciiz "es 1"
-string_iuwiczqush: .asciiz "es otro"
+string_kwwkmgrxql: .asciiz "\n"
+string_yqhryemdpu: .asciiz "es 0"
+string_asulgqngnf: .asciiz "es 1"
+string_qnnbyepgyg: .asciiz "es otro"
 
 .text
 function_factorial:
@@ -15,7 +15,7 @@ subu $sp, $sp, 4
 sw $t0, 0($sp)
 
 # Do until
-do_until_affnizpysn:
+do_until_dpdlvlfnlh:
 
 # Asignación de variable: resultado
 lw $t0, -8($fp)
@@ -28,7 +28,7 @@ addiu $sp, $sp, 4
 mul $t0, $t1, $t0
 sw $t0, -8($fp)
 
-# LineaExpresion: Operacion -> semantic.Operacion@b1bc7ed
+# LineaExpresion: Operacion -> semantic.Operacion@7cd84586
 lw $t0, -4($fp)
 # DECREMENTO
 addi $t0, $t0, -1
@@ -40,13 +40,13 @@ li $t0, 1
 # IGUAL
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
-beq $t0, $t1, igual_zyogwbxahv
+beq $t0, $t1, igual_jojdmrquyz
 li $t0, 0
-j no_igual_zyogwbxahv
-igual_zyogwbxahv: li $t0, 1
-no_igual_zyogwbxahv:
-beq $t0, $zero, do_until_affnizpysn
-final_do_until_affnizpysn:
+j no_igual_jojdmrquyz
+igual_jojdmrquyz: li $t0, 1
+no_igual_jojdmrquyz:
+beq $t0, $zero, do_until_dpdlvlfnlh
+final_do_until_dpdlvlfnlh:
 
 lw $t0, -8($fp)
 # Return
@@ -76,7 +76,7 @@ syscall
 # jal imprimir_salto_linea
 
 # Print "\n"
-la $t0, string_tqoqantugn
+la $t0, string_kwwkmgrxql
 move $a0, $t0
 li $v0, 4
 syscall
@@ -102,7 +102,7 @@ syscall
 # jal imprimir_salto_linea
 
 # Print "\n"
-la $t0, string_tqoqantugn
+la $t0, string_kwwkmgrxql
 move $a0, $t0
 li $v0, 4
 syscall
@@ -125,7 +125,7 @@ syscall
 # jal imprimir_salto_linea
 
 # Print "\n"
-la $t0, string_tqoqantugn
+la $t0, string_kwwkmgrxql
 move $a0, $t0
 li $v0, 4
 syscall
@@ -148,7 +148,7 @@ syscall
 # jal imprimir_salto_linea
 
 # Print "\n"
-la $t0, string_tqoqantugn
+la $t0, string_kwwkmgrxql
 move $a0, $t0
 li $v0, 4
 syscall
@@ -164,7 +164,7 @@ lw $fp, 0($sp) # Restaura el $fp anterior
 addu $sp, $sp, 4 # Libera el fp de la pila
 
 # Print "\n"
-la $t0, string_tqoqantugn
+la $t0, string_kwwkmgrxql
 move $a0, $t0
 li $v0, 4
 syscall
@@ -181,6 +181,31 @@ jal function_ciclo
 addu $sp, $sp, 4 # Libera los parámetros de la pila
 lw $fp, 0($sp) # Restaura el $fp anterior
 addu $sp, $sp, 4 # Libera el fp de la pila
+
+# Print "\n"
+la $t0, string_kwwkmgrxql
+move $a0, $t0
+li $v0, 4
+syscall
+# jal imprimir_salto_linea
+
+# Print semantic.Operacion@79fc0f2f
+li $t0, 2
+subu $sp, $sp, 4
+sw $t0, 0($sp)
+li $t0, 1
+# MAYOR
+lw $t1, 0($sp)
+addiu $sp, $sp, 4
+slt $t0, $t0, $t1
+# AND
+lw $t1, 0($sp)
+addiu $sp, $sp, 4
+and $t0, $t0, $t1
+move $a0, $t0
+li $v0, 1
+syscall
+# jal imprimir_salto_linea
 
 # Terminar el programa
 li $v0, 10
@@ -215,7 +240,7 @@ sw $t0, 0($sp)
 li $t0, 1
 subu $sp, $sp, 4
 sw $t0, 0($sp)
-for_inicio_tbvjtblpce:
+for_inicio_wciqmpsdjv:
 lw $t0, -16($fp)
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -224,7 +249,7 @@ lw $t0, -8($fp)
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t1, $t0
-beq $t0, $zero, for_fin_tbvjtblpce
+beq $t0, $zero, for_fin_wciqmpsdjv
 
 # Asignación de variable: resultado
 lw $t0, -12($fp)
@@ -240,8 +265,8 @@ lw $t0, -16($fp)
 # INCREMENTO
 addi $t0, $t0, 1
 sw $t0, -16($fp)
-j for_inicio_tbvjtblpce
-for_fin_tbvjtblpce:
+j for_inicio_wciqmpsdjv
+for_fin_wciqmpsdjv:
 
 lw $t0, -12($fp)
 # Return
@@ -261,20 +286,20 @@ li $t0, 0
 # IGUAL
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
-beq $t0, $t1, igual_ehqowhrnkq
+beq $t0, $t1, igual_cbkmnrdcwy
 li $t0, 0
-j no_igual_ehqowhrnkq
-igual_ehqowhrnkq: li $t0, 1
-no_igual_ehqowhrnkq:
-beq $t0, $zero, sino_if_jjqhvnnvpj
-if_jjqhvnnvpj:
+j no_igual_cbkmnrdcwy
+igual_cbkmnrdcwy: li $t0, 1
+no_igual_cbkmnrdcwy:
+beq $t0, $zero, sino_if_mfyovplfqy
+if_mfyovplfqy:
 
-la $t0, string_etksfqwahz
+la $t0, string_yqhryemdpu
 # Return
 addu $sp, $sp, 0 # Libera las variables de la pila
 jr $ra
-j fin_if_jjqhvnnvpj
-sino_if_jjqhvnnvpj:
+j fin_if_mfyovplfqy
+sino_if_mfyovplfqy:
 # Elif 
 lw $t0, -4($fp)
 subu $sp, $sp, 4
@@ -283,30 +308,30 @@ li $t0, 1
 # IGUAL
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
-beq $t0, $t1, igual_rcvlrxhfbw
+beq $t0, $t1, igual_bqvxgftpvo
 li $t0, 0
-j no_igual_rcvlrxhfbw
-igual_rcvlrxhfbw: li $t0, 1
-no_igual_rcvlrxhfbw:
-beq $t0, $zero, sino_elif_ibwnjvqbqk
-elif_ibwnjvqbqk:
+j no_igual_bqvxgftpvo
+igual_bqvxgftpvo: li $t0, 1
+no_igual_bqvxgftpvo:
+beq $t0, $zero, sino_elif_smpkfinrcr
+elif_smpkfinrcr:
 
-la $t0, string_xhsidcuhoc
+la $t0, string_asulgqngnf
 # Return
 addu $sp, $sp, 0 # Libera las variables de la pila
 jr $ra
-j fin_elif_ibwnjvqbqk
-sino_elif_ibwnjvqbqk:
+j fin_elif_smpkfinrcr
+sino_elif_smpkfinrcr:
 # Else
-elsebajfevbcvk:
+elsegnsqrixydv:
 
-la $t0, string_iuwiczqush
+la $t0, string_qnnbyepgyg
 # Return
 addu $sp, $sp, 0 # Libera las variables de la pila
 jr $ra
-fin_else_bajfevbcvk:
-fin_elif_ibwnjvqbqk:
-fin_if_jjqhvnnvpj:
+fin_else_gnsqrixydv:
+fin_elif_smpkfinrcr:
+fin_if_mfyovplfqy:
 
 # Salir funcion indice
 addu $sp, $sp, 0 # Libera las variables de la pila
@@ -321,7 +346,7 @@ sw $t0, 0($sp)
 # Asignación de variable: contador
 li $t0, 0
 sw $t0, -4($fp)
-for_inicio_wdxzmrmikw:
+for_inicio_cjkeebzffx:
 lw $t0, -4($fp)
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -330,7 +355,7 @@ li $t0, 10
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t1, $t0
-beq $t0, $zero, for_fin_wdxzmrmikw
+beq $t0, $zero, for_fin_cjkeebzffx
 
 # Print contador
 lw $t0, -4($fp)
@@ -354,24 +379,24 @@ li $t0, 5
 # IGUAL
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
-beq $t0, $t1, igual_nzlluxxwnn
+beq $t0, $t1, igual_eejxwclnmy
 li $t0, 0
-j no_igual_nzlluxxwnn
-igual_nzlluxxwnn: li $t0, 1
-no_igual_nzlluxxwnn:
-beq $t0, $zero, sino_if_kcaozaqlay
-if_kcaozaqlay:
+j no_igual_eejxwclnmy
+igual_eejxwclnmy: li $t0, 1
+no_igual_eejxwclnmy:
+beq $t0, $zero, sino_if_yzocloocfx
+if_yzocloocfx:
 
-j for_fin_wdxzmrmikw
-j fin_if_kcaozaqlay
-sino_if_kcaozaqlay:
-fin_if_kcaozaqlay:
+j for_fin_cjkeebzffx
+j fin_if_yzocloocfx
+sino_if_yzocloocfx:
+fin_if_yzocloocfx:
 lw $t0, -4($fp)
 # INCREMENTO
 addi $t0, $t0, 1
 sw $t0, -4($fp)
-j for_inicio_wdxzmrmikw
-for_fin_wdxzmrmikw:
+j for_inicio_cjkeebzffx
+for_fin_cjkeebzffx:
 
 li $t0, 49
 # Return
@@ -393,7 +418,7 @@ sw $t0, 0($sp)
 li $t0, 0
 subu $sp, $sp, 4
 sw $t0, 0($sp)
-for_inicio_zdidovyjom:
+for_inicio_tdolpqcqea:
 lw $t0, -12($fp)
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -402,13 +427,13 @@ lw $t0, -4($fp)
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t1, $t0
-beq $t0, $zero, for_fin_zdidovyjom
+beq $t0, $zero, for_fin_tdolpqcqea
 
 # For
 # Asignación de variable: j
 li $t0, 0
 sw $t0, -8($fp)
-for_inicio_kcvxxobmnq:
+for_inicio_qiuxwzpcpe:
 lw $t0, -8($fp)
 subu $sp, $sp, 4
 sw $t0, 0($sp)
@@ -417,7 +442,7 @@ lw $t0, -4($fp)
 lw $t1, 0($sp)
 addiu $sp, $sp, 4
 slt $t0, $t1, $t0
-beq $t0, $zero, for_fin_kcvxxobmnq
+beq $t0, $zero, for_fin_qiuxwzpcpe
 
 # Print '.'
 li $t0, 46
@@ -429,22 +454,26 @@ lw $t0, -8($fp)
 # INCREMENTO
 addi $t0, $t0, 1
 sw $t0, -8($fp)
-j for_inicio_kcvxxobmnq
-for_fin_kcvxxobmnq:
+j for_inicio_qiuxwzpcpe
+for_fin_qiuxwzpcpe:
 lw $t0, -12($fp)
 # INCREMENTO
 addi $t0, $t0, 1
 sw $t0, -12($fp)
-j for_inicio_zdidovyjom
-for_fin_zdidovyjom:
+j for_inicio_tdolpqcqea
+for_fin_tdolpqcqea:
+
+# Declaración de variable: lista, Tipo: LIST_INT
+subu $sp, $sp, 4
+sw $t0, 0($sp)
 
 li $t0, 0
 # Return
-addu $sp, $sp, 8 # Libera las variables de la pila
+addu $sp, $sp, 12 # Libera las variables de la pila
 jr $ra
 
 # Salir funcion ciclo
-addu $sp, $sp, 8 # Libera las variables de la pila
+addu $sp, $sp, 12 # Libera las variables de la pila
 jr $ra
 
 imprimir_salto_linea:
